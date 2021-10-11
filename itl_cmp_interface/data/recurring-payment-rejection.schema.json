@@ -1,0 +1,101 @@
+{
+    "type" : "object",
+    "$schema" : "http://json-schema.org/draft-03/schema#",
+    "description" : "This JSON file contains rejections associated with recurring payments or refunds",
+    "properties" : {
+      "interfaceCategory" : {
+        "type" : "string",
+        "required" : true,
+        "description" : "CMP categorisation of the job associated with this file ",
+        "enum" : [ "Payments" ]
+      },
+      "interfaceType" : {
+        "type" : "string",
+        "required" : true,
+        "description" : "Sub-categorisation of the job",
+        "enum" : [ "Recurring Card Payments", "Recurring Bank Payments" ]
+      },
+      "version" : {
+        "type" : "number",
+        "required" : true,
+        "description" : "The current version of the generic extract file. This must match the corresponding outbound file.",
+        "maximum" : 1.0,
+        "minimum" : 1.0
+      },
+      "transformDateTime" : {
+        "type" : "string",
+        "description" : "Indicates when a third-party file was transformed into the format required by CMP",
+        "format" : "date-time"
+      },
+      "transmitDateTime" : {
+        "type" : "string",
+        "description" : "Indicates when a file was sent to or received from a third-party system",
+        "format" : "date-time"
+      },
+      "externalFileName" : {
+        "type" : "string",
+        "required" : true,
+        "description" : "Third party file name",
+        "maxLength" : 100,
+        "pattern" : "^([a-zA-Z0-9._-])+$"
+      },
+      "details" : {
+        "type" : "array",
+        "items" : {
+          "type" : "object",
+          "properties" : {
+            "detailSequence" : {
+              "type" : "integer",
+              "required" : true,
+              "description" : "Unique identifier of the detail record within the file"
+            },
+            "hierarchyEntity" : {
+              "type" : "object",
+              "required" : true,
+              "description" : "This hierarchy entity the payment/refund relates to",
+              "properties" : {
+                "accountId" : {
+                  "type" : "integer",
+                  "description" : "The account number that the payment/refund relates to",
+                  "maximum" : 9.9999999E7,
+                  "minimum" : 1.0
+                }
+              }
+            },
+            "transactionType" : {
+              "type" : "string",
+              "required" : true,
+              "description" : "Indicates if payment or refund",
+              "enum" : [ "PAYMENT", "REFUND" ]
+            },
+            "transactionId" : {
+              "type" : "integer",
+              "description" : "Unique identifier of the payment/refund transaction.  This should be included in requests that are sent to third-party  systems",
+              "maximum" : 9.9999999E7,
+              "minimum" : 1.0
+            },
+            "externalReference" : {
+              "type" : "string",
+              "description" : "Allow for an external reference to be stored in CMP, for example a third party identifier",
+              "maxLength" : 50
+            },
+            "transactionCode" : {
+              "type" : "string",
+              "description" : "Populated if the transaction has not completed normally. Must be a valid CMP response code that is configured to control how the transaction failure is handled",
+              "maxLength" : 20
+            },
+            "transactionSummary" : {
+              "type" : "string",
+              "description" : "Short description of the transaction e.g. may contain an external error description",
+              "maxLength" : 50
+            },
+            "transactionDetail" : {
+              "type" : "string",
+              "description" : "Longer description of the transaction e.g. may contain additional error detail",
+              "maxLength" : 100
+            }
+          }
+        }
+      }
+    }
+  }

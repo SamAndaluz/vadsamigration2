@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_stock_picking_form_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.form.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="delivery.view_picking_withcarrier_out_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="send_to_shipper" string="Envíar a 99minutos" type="object" class="btn-primary" attrs="{'invisible': ['|','|',('carrier_delivery_type','!=','_99minutos'),('carrier_tracking_ref','!=',False),('state','in',('done','cancel'))]}"/>
+            </xpath>
+            <group name="carrier_data" position="inside">
+                <field name="carrier_delivery_type" invisible="1"/>
+                <field name="carrier_counter_ref" attrs="{'invisible': [('carrier_delivery_type','!=','_99minutos')]}"/>
+            </group>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_itl_request,access_itl_request,model_itl_request,itl_descarga_masiva_facturas.group_show_descarga_masiva,1,1,1,1
+access_itl_response,access_itl_response,model_itl_response,itl_descarga_masiva_facturas.group_show_descarga_masiva,1,1,1,1
+user_product_words,user_product_words,model_product_words,base.group_user,1,1,1,1
+res_company_xml_import_line,res_company_xml_import_line,model_res_company_xml_import_line,base.group_user,1,1,1,1

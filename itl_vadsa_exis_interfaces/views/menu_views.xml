@@ -1,0 +1,135 @@
+<odoo>
+  <data>
+      
+      <menuitem id="menu_vadsa_exis"
+                name="EXIS"
+                sequence="1"/>
+      
+      <menuitem id="menu_sr_configure"
+                parent="menu_vadsa_exis"
+                name="SR APIs"
+                sequence="1"/>
+      <menuitem id="activemq_message_menu_act" 
+                name="ActiveMQ Messages" 
+                parent="menu_sr_configure" 
+                action="itl_sr_interface.activemq_message_action" 
+                sequence="10"/>
+      <menuitem id="activemq_message_dpoe_menu_act" 
+                name="DoPlaceOrderEvent" 
+                parent="activemq_message_menu_act" 
+                action="itl_sr_interface.activemq_message_dpoe_action" 
+                sequence="1"/>
+      <menuitem id="activemq_message_dpsoe_menu" 
+                name="DoPlaceServiceOrderEvent" 
+                parent="activemq_message_menu_act" 
+                sequence="2"/>
+      <menuitem id="activemq_message_dpsoe_addon_menu_act" 
+                name="AddOn" 
+                parent="activemq_message_dpsoe_menu" 
+                action="itl_sr_interface.activemq_message_dpsoe_addon_action" 
+                sequence="1"/>
+      <menuitem id="activemq_message_dpsoe_activation_menu_act" 
+                name="Activation" 
+                parent="activemq_message_dpsoe_menu" 
+                action="itl_sr_interface.activemq_message_dpsoe_activation_action" 
+                sequence="2"/>
+      <menuitem id="activemq_message_dpsoe_transform_menu_act" 
+                name="Transform" 
+                parent="activemq_message_dpsoe_menu" 
+                action="itl_sr_interface.activemq_message_dpsoe_transform_action" 
+                sequence="2"/>
+      <menuitem id="activemq_message_dpsoe_transfer_menu_act" 
+                name="Transfer (Gift)" 
+                parent="activemq_message_dpsoe_menu" 
+                action="itl_sr_interface.activemq_message_dpsoe_transfer_action" 
+                sequence="2"/>
+      <menuitem id="activemq_message_dpsoe_voicemail_menu_act" 
+                name="Voicemail" 
+                parent="activemq_message_dpsoe_menu" 
+                action="itl_sr_interface.activemq_message_dpsoe_voicemail_action" 
+                sequence="2"/>
+      <menuitem id="activemq_message_dpsoe_portin_menu_act" 
+                name="PortIn" 
+                parent="activemq_message_dpsoe_menu" 
+                action="itl_sr_interface.activemq_message_dpsoe_portin_action" 
+                sequence="2"/>
+      <menuitem id="activemq_message_log_menu_act" 
+                name="ActiveMQ Messages Log" 
+                parent="menu_sr_configure" 
+                action="itl_sr_interface.view_sr_get_message_log_action_window" 
+                sequence="11"/>
+      <menuitem id="menu_sr_get_message"
+                parent="menu_sr_configure"
+                name="Get queue messages"
+                action="itl_sr_interface.view_sr_get_message_action"
+                sequence="12"/>
+
+      <menuitem id="menu_cmp_configure"
+                parent="menu_vadsa_exis"
+                name="CMP"
+                sequence="2"/>
+      <menuitem id="menu_cmp_messages"
+                parent="menu_cmp_configure"
+                name="Recurring Card Prepayments"
+                sequence="1"/>
+      <menuitem id="cmp_message_menu_act" 
+                name="Recurring Card Prepayments File" 
+                parent="menu_cmp_messages" 
+                action="itl_cmp_interface.cmp_message_action" 
+                sequence="1"/>
+      <menuitem id="cmp_item_menu_act" 
+                name="Details" 
+                parent="menu_cmp_messages" 
+                action="itl_cmp_interface.cmp_item_action" 
+                sequence="2"/>
+      <menuitem id="cmp_receipt_menu_act" 
+                name="CMP Receipt" 
+                parent="menu_cmp_configure" 
+                action="itl_cmp_interface.cmp_receipt_action" 
+                sequence="3"/>
+      <menuitem id="cmp_datawarehouse_menu_act" 
+                name="CMP Datawarehouse" 
+                parent="menu_cmp_configure" 
+                action="itl_cmp_interface.cmp_datawarehouse_action" 
+                sequence="4"/>
+      <menuitem id="cmp_log_menu_act" 
+                name="CMP Log" 
+                parent="menu_cmp_configure" 
+                action="itl_cmp_interface.cmp_message_log_action" 
+                sequence="5"/>
+      <menuitem id="menu_cmp_get_file"
+                parent="menu_cmp_configure"
+                name="Get CMP file"
+                action="itl_cmp_interface.cmp_get_file_action"
+                sequence="6"/>
+      
+      <menuitem id="menu_99_minutos"
+                parent="menu_vadsa_exis"
+                name="99 minutos"
+                sequence="3"/>
+      <menuitem id="menu_99minutos_notifications"
+                parent="menu_99_minutos"
+                name="99 minutos notifications"
+                action="itl_99_minutos.itl_99_minutos_notification_action_window"
+                sequence="12"/>
+      <menuitem id="itl_99_minutos_order_menu"
+                parent="menu_99_minutos"
+                name="99 minutos orders"
+                action="itl_99_minutos.itl_99_minutos_order_action_window"
+                sequence="14"/>
+      
+      <menuitem id="menu_wpp"
+                parent="menu_vadsa_exis"
+                name="WebPay Plus"
+                sequence="4"/>
+
+      <menuitem id="menu_wpp_notifications"
+                parent="menu_wpp"
+                name="WebPay Plus Notifications"
+                action="itl_webpay_plus.wpp_response_action_window"
+                sequence="5"/>
+
+      <menuitem id="vadsa_exis_config_menu" name="General Settings"
+                parent="menu_vadsa_exis" action="base_setup.action_general_configuration"/>
+  </data>
+</odoo>

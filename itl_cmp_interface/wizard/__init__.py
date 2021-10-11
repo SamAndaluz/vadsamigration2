@@ -1,0 +1,1 @@
+from . import cmp_get_file

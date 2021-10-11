@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record id="res_config_settings_view_descarga_masiva_form" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.descarga.masiva</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="85"/>
+            <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('settings')]" position="inside">
+                    <div class="app_settings_block" data-string="Descarga masiva de facturas" string="Descarga masiva de facturas" data-key="itl_descarga_masiva_facturas">
+                        <h2>Descarga masiva de facturas</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">URL solicitud</span>
+                                    <div class="text-muted">
+                                        URL para generar una solicitud de descarga masiva.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="url_solicitud"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">URL estatus</span>
+                                    <div class="text-muted">
+                                        URL para consultar el estado de la solicitud.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="url_estatus"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Archivo .pfx</span>
+                                    <div class="text-muted">
+                                        Archivo generado con la Fiel del contribuyente.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="filename" invisible='1'/>
+                                        <field name="pfx_file" widget='binary' filename='filename'/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Contraseña del archivo .pfx</span>
+                                    <div class="text-muted">
+                                        Indica la contraseña de la clave privada de su archivo Fiel.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="password_pfx" password="True"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Contrato</span>
+                                    <div class="text-muted">
+                                        Indica el código de contrato del usuario con el que se realizará la solicitud.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="contrato"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Cron descargar facturas cliente</span>
+                                    <div class="text-muted">
+                                        Cron descargar facturas cliente.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="active_cliente"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-12 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Cron descargar facturas proveedor</span>
+                                    <div class="text-muted">
+                                        Cron descargar facturas proveedor.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="active_proveedor"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Facturas de cliente -->
+                        <h2>Facturas de clientes</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Cuenta por Cobrar Clientes</span>
+                                    <div class="text-muted">
+                                        Cuenta por Cobrar Clientes.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="cuenta_cobrar_cliente_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Cuenta de Ingresos Clientes</span>
+                                    <div class="text-muted">
+                                        Cuenta de Ingresos Clientes.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="cuenta_ingreso_cliente_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Diario Clientes</span>
+                                    <div class="text-muted">
+                                        Diario Clientes.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="journal_customer_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Subir en estatus</span>
+                                    <div class="text-muted">
+                                        Subir en estatus.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="invoice_status_customer"/>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Representante Comercial</span>
+                                    <div class="text-muted">
+                                        Representante Comercial.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="user_customer_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Equipo de ventas</span>
+                                    <div class="text-muted">
+                                        Equipo de ventas.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="team_customer_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Facturas de proveedor -->
+                        <h2>Facturas de proveedor</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Cuenta por Pagar Proveedores</span>
+                                    <div class="text-muted">
+                                        Cuenta por Pagar Proveedores.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="cuenta_pagar_proveedor_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Cuenta de Gastos de Proveedor</span>
+                                    <div class="text-muted">
+                                        Cuenta de Gastos de Proveedor.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="cuenta_gasto_proveedor_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Diario Proveedores</span>
+                                    <div class="text-muted">
+                                        Diario Proveedores.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="journal_provider_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Subir en estatus</span>
+                                    <div class="text-muted">
+                                        Subir en estatus.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="invoice_status_provider"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Almacén</span>
+                                    <div class="text-muted">
+                                        Necesario para crear el movimiento de almacén.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="warehouse_provider_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6 o_setting_box">
+                                <div class="o_setting_left_pane"/>
+                                <div class="o_setting_right_pane">
+                                    <span class="o_form_label">Comprador</span>
+                                    <div class="text-muted">
+                                        Comprador.
+                                    </div>
+                                    <div class="text-muted">
+                                        <field name="user_provider_id"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="action_descarga_masiva_settings" model="ir.actions.act_window">
+            <field name="name">Settings</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">res.config.settings</field>
+            <field name="view_id" ref="res_config_settings_view_descarga_masiva_form"/>
+            <field name="view_mode">form</field>
+            <field name="target">inline</field>
+            <field name="context">{'module': 'itl_descarga_masiva_facturas'}</field>
+        </record>
+        
+        
+        <menuitem name="Settings" id="menu_descarga_masiva_settings" parent="itl_descarga_masiva_facturas.menu_root" groups="base.group_system"/>
+        <menuitem id="base.menu_config" name="Configuration" parent="menu_descarga_masiva_settings" sequence="1" action="action_descarga_masiva_settings" groups="base.group_system"/>
+        
+    </data>
+</odoo>

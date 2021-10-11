@@ -1,0 +1,103 @@
+<odoo>
+   <template id="index_oxxo">
+      <t t-call="web.layout">
+         <head>
+            <meta charset="utf-8" />
+            <title>Stripe Card / OXXO sample</title>
+            <meta name="description" content="A demo of Stripe Payment Intents" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <link rel="icon" href="favicon.ico" type="image/x-icon" />
+            <link rel="stylesheet" href="/itl_stripe_oxxo/static/src/css/normalize.css" />
+            <link rel="stylesheet" href="/itl_stripe_oxxo/static/src/css/global.css" />
+         </head>
+         <body>
+            <div class="sr-root">
+               <div class="sr-main">
+                  <div class="sr-picker">
+                     <!--<button class="sr-pm-button" data-paymentmethod="card" id="card-button">Tarjeta</button>-->
+                     <button class="sr-pm-button selected" id="oxxo-button" data-paymentmethod="oxxo">OXXO</button>
+                  </div>
+                  <!-- Payment form for cards -->
+                  <form class="sr-payment-form card hidden">
+                     <div>
+                        <div class="sr-input sr-element sr-card-element" id="card-element">
+                           <!-- A Stripe card Element will be inserted here. -->
+                        </div>
+                     </div>
+                     <button id="submit" type="submit">
+                        <div class="spinner hidden" id="spinner"></div>
+                        <span id="button-text">Pagar</span><span id="order-amount"></span>
+                     </button>
+                  </form>
+                  <!-- Payment form for Oxxo -->
+                  <form class="sr-payment-form oxxo">
+                     <div>
+                        <div class="sr-combo-inputs" id="oxxo-billing-details">
+                           <!-- Name and email are required for the payment -->
+                           <div class="col">
+                              <label for="name">
+                              Nombre completo
+                              </label>
+                              <input id="name" name="name" placeholder="Fulano de Tal" t-att-value="customer_name"/>
+                           </div>
+                           <div class="col">
+                              <label for="email">
+                              Correo Electrónico
+                              </label>
+                              <input id="email" name="email" type="email" placeholder="fulano@example.com" t-att-value="customer_email"/>
+                           </div>
+                        </div>
+                     </div>
+                      <div class="MiddleElement">
+                          $<span t-esc="'{0:,.2f}'.format(invoice_amount)"/> MXN
+                      </div>
+                      <div class="MiddleElement-m">
+                          Referencia: <span t-esc="invoice_number"/>
+                      </div>
+                     <button id="submit" type="submit">
+                        <div class="spinner hidden" id="spinner"></div>
+                        <span id="button-text">Pagar</span><span id="order-amount"></span>
+                     </button>
+                  </form>
+                  <!-- Show any errors that happen from Stripe -->
+                  <div class="sr-field-error" role="alert"></div>
+                  <!-- Success UI for Cards -->
+                  <div class="sr-result-card hidden">
+                     <p>¡Pago completado!<br /></p>
+                     <pre>
+                        <code></code>
+                      </pre>
+                  </div>
+                  <!-- Success UI for Oxxo -->
+                  <div class="sr-result-oxxo hidden">
+                     <h1>¡Gracias! Solo falta un paso más:</h1>
+                     <div class="sr-instructions">
+                        <p>
+                           Instrucciones para realizar el pago en OXXO:
+                        <p>1. Entregue el voucher con el código de barras a la persona en la caja de cualquier tienda OXXO para que ésta lo escanee.</p>
+                        <p>2. Proporcione el monto en efectivo a la persona en la caja.</p>
+                        <p>3. Una vez completado su pago, guarde el recibo para sus archivos.</p>
+                        <p>4. Para cualquier duda o aclaración, contacte al comerciante.</p>
+                        </p>
+                     </div>
+                     <table class="sr-tabular-info">
+                        <tr>
+                           <th>Monto</th>
+                           <th>Fecha de expiración</th>
+                        </tr>
+                        <tr>
+                           <td><span class="order-amount"></span></td>
+                           <td><span class="oxxo-expiry-date"></span></td>
+                        </tr>
+                     </table>
+                     <img width="150px" src="https://cdn.glitch.com/4b07d8fe-0ac6-478d-9303-5ed5d5c1220d%2Foxxo.png?v=1571866932777" alt="OXXO logo"/>
+                     <div class="oxxo-display"></div>
+                  </div>
+               </div>
+            </div>
+             <script src="https://js.stripe.com/v3/"></script>
+            <script src="/itl_stripe_oxxo/static/src/js/script.js"></script>
+         </body>
+      </t>
+   </template>
+</odoo>

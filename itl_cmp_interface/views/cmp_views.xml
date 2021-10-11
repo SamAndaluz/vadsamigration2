@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cmp_message_tree" model="ir.ui.view">
+        <field name="name">cmp.message.tree</field>
+        <field name="model">cmp.message</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="job_description"/>
+                <field name="file_name"/>
+                <field name="status_message" string="General Status"/>
+                <field name="status" string="V/M Status"/>
+                <field name="status_amex" string="Amex Status"/>
+                <field name="batch_date_time"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cmp_message_view_form" model="ir.ui.view">
+        <field name="name">cmp.message.view.form</field>
+        <field name="model">cmp.message</field>
+        <field name="arch" type="xml">
+            <form string="CMP Message">
+                <header>
+                    <button name="process_details" type="object" string="Process content" groups="itl_cmp_interface.group_show_actions_cmp"/>
+                    <button name="send_files_to_elavon" type="object" string="Send to ELAVON" groups="itl_cmp_interface.group_show_actions_cmp"/>
+                    <button name="loop_files" type="object" string="Process response" groups="itl_cmp_interface.group_show_actions_cmp"/>
+                    <button name="validate_rejection_file" type="object" string="Create rejection file" groups="itl_cmp_interface.group_show_actions_cmp"/>
+                    <button name="send_rejection_file" type="object" string="Send rejection file" groups="itl_cmp_interface.group_show_actions_cmp"/>
+                    <field name="status_message" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <!--<field name="name"/>-->
+                        <field name="job_code" />
+                        <field name="job_description" />
+                        <field name="batch_date_time" />
+                        <field name="file" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="cmp_item_ids" />
+                        <field name="content_file" invisible="1"/>
+                    </group>
+                    <group>
+                        <group string="Visa/MasterCard">
+                            <field name="status" />
+                            <field name="file_to_elavon" filename="filename_to_elavon"/>
+                            <field name="filename_to_elavon" invisible="1"/>
+                            <field name="file_from_elavon" filename="filename_from_elavon"/>
+                            <field name="filename_from_elavon" invisible="1"/>
+                            <field name="file_from_elavon_err" filename="filename_from_elavon_err"/>
+                            <field name="filename_from_elavon_err" invisible="1"/>
+                        </group>
+                        <group string="American Express">
+                            <field name="status_amex" />
+                            <field name="file_amex_to_elavon" filename="filename_amex_to_elavon"/>
+                            <field name="filename_amex_to_elavon" invisible="1"/>
+                            <field name="file_amex_from_elavon" filename="filename_amex_from_elavon"/>
+                            <field name="filename_amex_from_elavon" invisible="1"/>
+                            <field name="file_amex_from_elavon_err" filename="filename_amex_from_elavon_err"/>
+                            <field name="filename_amex_from_elavon_err" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="file_rejection_to_cmp" filename="filename_file_rejection_to_cmp"/>
+                        <field name="filename_file_rejection_to_cmp" invisible="1"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cmp_receipt_tree" model="ir.ui.view">
+        <field name="name">cmp.receipt.tree</field>
+        <field name="model">cmp.receipt.print.extract</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="name"/>
+                <field name="file_name"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cmp_receipt_view_form" model="ir.ui.view">
+        <field name="name">cmp.receipt.view.form</field>
+        <field name="model">cmp.receipt.print.extract</field>
+        <field name="arch" type="xml">
+            <form string="CMP Message">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="status" />
+                        <field name="file" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="content_file" />
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cmp_datawarehouse_tree" model="ir.ui.view">
+        <field name="name">cmp.datawarehouse.tree</field>
+        <field name="model">cmp.datawarehouse.extract</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="name"/>
+                <field name="file_name"/>
+                <field name="status"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cmp_datawarehouse_view_form" model="ir.ui.view">
+        <field name="name">cmp.datawarehouse.view.form</field>
+        <field name="model">cmp.datawarehouse.extract</field>
+        <field name="arch" type="xml">
+            <form string="CMP Message">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="status" />
+                        <field name="file" filename="file_name"/>
+                        <field name="file_name" invisible="1"/>
+                        <field name="content_file" />
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!--
+    <record id="view_activemq_message_search" model="ir.ui.view">                                
+        <field name="name">activemq.message.search</field>                                
+        <field name="model">activemq.message</field>                                
+        <field name="arch" type="xml">                                    
+            <search string="Search ActiveMQ Messages">                                       
+                <group expand="0" string="Group By">                                            
+                    <filter string="Event type" name="name" context="{'group_by': 'name'}"></filter>                                 
+                </group>                                    
+            </search>                                
+        </field>                            
+    </record>
+    -->
+
+    <!-- cmp.message action window -->
+    <record id="cmp_message_action" model="ir.actions.act_window">
+        <field name="name">CMP Message</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cmp.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <record id="cmp_receipt_action" model="ir.actions.act_window">
+        <field name="name">CMP Receipt</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cmp.receipt.print.extract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <record id="cmp_datawarehouse_action" model="ir.actions.act_window">
+        <field name="name">CMP Datawarehouse</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cmp.datawarehouse.extract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+
+    <record id="view_cmp_item_message_tree" model="ir.ui.view">
+        <field name="name">cmp.item.tree</field>
+        <field name="model">cmp.item</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="transaction_number"/>
+                <field name="token_type"/>
+                <field name="account_number"/>
+                <field name="amount"/>
+                <field name="invoice_id"/>
+                <field name="status"/>
+                <field name="response_code"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="cmp_item_view_form" model="ir.ui.view">
+        <field name="name">cmp.item.view.form</field>
+        <field name="model">cmp.item</field>
+        <field name="arch" type="xml">
+            <form string="CMP Item">
+                <header>
+                    <!--<button name="process_document" type="object" string="Process document"/>-->
+                    <button name="generate_invoice" type="object" string="Generate Invoice" attrs="{'invisible': [('invoice_id','!=',False)]}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="status" />
+                        <field name="transaction_number" />
+                        <field name="payment_type" />
+                        <field name="account_number" />
+                        <field name="amount" />
+                        <field name="name_on_card" />
+                        <field name="card_number" />
+                        <field name="start_date" />
+                        <field name="end_date" />
+                        <field name="card_reference_number" />
+                        <field name="card_type" />
+                        <field name="response_code" />
+                        <field name="other_response_code" />
+                        <field name="authorization_number" />
+                        <field name="token_type" />
+                        <field name="invoice_id" />
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="cmp_item_action" model="ir.actions.act_window">
+        <field name="name">CMP Item</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cmp.item</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <record id="cmp_message_log_action" model="ir.actions.act_window">
+        <field name="name">CMP Log</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cmp.message.log</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <record id="view_cmp_message_log_tree" model="ir.ui.view">
+        <field name="name">cmp.message.log.tree</field>
+        <field name="model">cmp.message.log</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="log"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <!--
+    <menuitem id="activemq_message_menu_act" name="ActiveMQ Messages" parent="abs_sr_api.menu_sr_configure" action="activemq_message_action" sequence="10"/>
+    -->
+    
+</odoo>

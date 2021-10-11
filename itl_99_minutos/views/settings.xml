@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="30"/>
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <!--<xpath expr="//div[@id='product_general_settings']" position="after">-->
+            <div data-key='sale_management' position="inside">
+                <h2>99 minutos Config</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Delivery address
+                            </span>
+                            <div class="text-muted">
+                                <field name="delivery_address_99_minutos"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Correo remitente no cobertura</span>
+                            <div class="text-muted">
+                                Correo electrónico del remitente de notificaciones de no cobertura. Si no se coloca se usará el del sistema.
+                            </div>
+                            <div class="text-muted">
+                                <field name="email_from_99minutos"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Contactos para notificación de no cobertura</span>
+                            <div class="text-muted">
+                                Contactos a los que se les enviará la notificación de no cobertura.
+                            </div>
+                            <div class="text-muted">
+                                <field name="res_partner_ids_notification_99minutos" >
+                                    <tree>
+                                        <field name="name"/>
+                                        <field name="email"/>
+                                    </tree>
+                                </field>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                URL for tracking
+                            </span>
+                            <div class="text-muted">
+                                URL que se enviará por correo para el seguimiento del envío.
+                            </div>
+                            <div class="text-muted">
+                                <field name="url_tracking_99minutos"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Email remitente para seguimiento de envío
+                            </span>
+                            <div class="text-muted">
+                                Si está configurado lo pone como correo del remitente, si no usa el del sistema.
+                            </div>
+                            <div class="text-muted">
+                                <field name="email_from_tracking_99minutos"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Usuario para envío de notificaciones
+                            </span>
+                            <div class="text-muted">
+                                Si está configurado lo usa como el usuario que envía el correo de seguimiento.
+                            </div>
+                            <div class="text-muted">
+                                <field name="user_send_email_99minutos"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>

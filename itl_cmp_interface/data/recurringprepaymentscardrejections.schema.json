@@ -1,0 +1,83 @@
+{
+  "type" : "object",
+  "$schema" : "http://json-schema.org/draft-03/schema#",
+  "properties" : {
+    "interfaceCategory" : {
+      "type" : "string",
+      "description" : "CMP categorization of the job that produces this extract file. This must match the corresponding outbound file.",
+      "maxLength" : 20,
+      "enum" : [ "Payments" ]
+    },
+    "interfaceType" : {
+      "type" : "string",
+      "description" : "CMP sub-categorization of the job that produces this extract file. This must match the corresponding outbound file.",
+      "maxLength" : 24,
+      "enum" : [ "Card Pre Payments" ]
+    },
+    "version" : {
+      "type" : "number",
+      "required" : true,
+      "description" : "The current version of the generic extract file. This must match the corresponding outbound file.",
+      "maximum" : 1.0,
+      "minimum" : 1.0
+    },
+    "externalFileName" : {
+      "type" : "string",
+      "required" : true,
+      "description" : "The name of the file that was received from the external system.",
+      "maxLength" : 20,
+      "pattern" : "^([a-zA-Z0-9._-])+$"
+    },
+    "transformDateTime" : {
+      "type" : "string",
+      "description" : "Timestamp indicating when the third-party response file was transformed into the CMP generic format.",
+      "format" : "date-time"
+    },
+    "transmitDateTime" : {
+      "type" : "string",
+      "description" : " Timestamp indicating when the response file was received from the third-party system.",
+      "format" : "date-time"
+    },
+    "recurringPrePaymentsCardRejectionsDetail" : {
+      "type" : "array",
+      "items" : {
+        "type" : "object",
+        "properties" : {
+          "detailSequence" : {
+            "type" : "integer",
+            "description" : "Starts at 1 and incremented for each detail record."
+          },
+          "accountNumber" : {
+            "type" : "integer",
+            "required" : true,
+            "description" : " Account number to which the payment transaction applies to.",
+            "maximum" : 9.9999999E7,
+            "minimum" : 1.0
+          },
+          "transactionNumber" : {
+            "type" : "integer",
+            "description" : "Unique identifier of the payment transaction in CMP. This should be included in requests that are sent to third-party systems.",
+            "maximum" : 9.9999999E7,
+            "minimum" : 1.0
+          },
+          "externalReference" : {
+            "type" : "string",
+            "description" : "May be populated for rejected transactions. E.g. an unique transaction reference provided by the third party system"
+          },
+          "transactionCode" : {
+            "type" : "string",
+            "description" : "Populated if the transaction has not completed normally."
+          },
+          "transactionSummary" : {
+            "type" : "string",
+            "description" : "Short description of the transaction - e.g. may contain an external error description"
+          },
+          "transactionDetail" : {
+            "type" : "string",
+            "description" : "Longer description of the transaction e.g. may contain additional error details"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_res_partner_token,access_res_partner_token,model_res_partner_token,base.group_user,1,1,1,1
+access_activemq_message,access_activemq_message,model_activemq_message,base.group_user,1,1,1,1
+access_activemq_message_log,access_activemq_message_log,model_sr_get_message_log,base.group_user,1,1,1,1

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+        <record id="hr_salary_rule_form_inherit" model="ir.ui.view">
+            <field name="name">hr.salary.rule.form.nomina</field>
+            <field name="model">hr.salary.rule</field>
+            <field name="inherit_id" ref="hr_payroll.hr_salary_rule_form"/>
+            <field name="arch" type="xml">
+              <field name="appears_on_payslip" position="after">
+                    <field name="category_code" invisible="1"/>
+                    <field name="tipo_percepcion" attrs="{'invisible':[('category_code','not in',['ALW'])]}" />
+                    <field name="tipo_deduccion" attrs="{'invisible':[('category_code','not in',['DED'])]}"/>
+                    <field name="tipo_otro_pago" attrs="{'invisible':[('category_code','not in',['DED_OTRO'])]}"/>
+                    <field name="forma_pago" />
+               <!--   <field name="itl_tipo_tabla_isr" />-->
+              </field><!--
+              <field name="code" position="attributes">
+                   <attribute name="readonly">1</attribute>
+              </field>
+              <field name="sequence" position="attributes">
+                   <attribute name="readonly">1</attribute>
+              </field> -->
+            </field>
+        </record>
+     
+    
+        
+    <!--
+    <record id="view_hr_employee_grade_form" model="ir.ui.view">
+        <field name="name">hr.payroll.structure.form</field>
+        <field name="model">hr.payroll.structure</field>
+        <field name="arch" type="xml">
+            <form string="Employee Function">
+                <group col="4">
+                    <field name="itl_tipo_tabla_isr" />
+                </group>
+            </form>
+        </field>
+    </record>-->
+</odoo>

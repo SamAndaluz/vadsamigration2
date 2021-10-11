@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_itl_vadsa_exis_interfaces_itl_vadsa_exis_interfaces,itl_vadsa_exis_interfaces.itl_vadsa_exis_interfaces,model_itl_vadsa_exis_interfaces_itl_vadsa_exis_interfaces,,1,0,0,0

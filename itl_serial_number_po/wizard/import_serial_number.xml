@@ -1,0 +1,33 @@
+<odoo>
+    <data>
+        
+        <record id="itl_import_serial_number_view_form" model="ir.ui.view">
+            <field name="name">itl.import.serial.number.form</field>
+            <field name="model">itl.import.serial.number</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="itl_filename" invisible="1"/>
+                            <field name="itl_file" widget="binary" filename="itl_filename"/>
+                        </group>
+                    </sheet>
+                    <footer class="oe_edit_only">
+                        <button string="Importar" name="import_serial_numbers" type="object" class="oe_highlight"/>
+                        <button string="Cancelar" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <record id="itl_import_serial_number_action" model="ir.actions.act_window">
+               <field name="name">Import Serial Numbers</field>
+               <field name="type">ir.actions.act_window</field>
+               <field name="res_model">itl.import.serial.number</field>
+               <field name="view_type">form</field>
+               <field name="view_mode">form</field>
+               <field name="target">new</field>
+        </record>
+    
+    </data>
+</odoo>

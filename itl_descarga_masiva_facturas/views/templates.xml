@@ -1,0 +1,9 @@
+<odoo>
+    <data>
+        <template id="assets_backend" name="module_name assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <link rel="stylesheet" href="/itl_descarga_masiva_facturas/static/src/css/styles.css"/>
+            </xpath>
+        </template>
+    </data>
+</odoo>

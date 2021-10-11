@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="itl_99_minutos_notification_list">
+      <field name="name">itl_99_minutos list</field>
+      <field name="model">itl.99.minutos.notification</field>
+      <field name="arch" type="xml">
+        <tree default_order="create_date desc">
+          <field name="response"/>
+          <field name="status"/>
+          <field name="create_date"/>
+        </tree>
+      </field>
+    </record>
+      
+      <record model="ir.ui.view" id="itl_99_minutos_notification_form">
+      <field name="name">itl_99_minutos form</field>
+      <field name="model">itl.99.minutos.notification</field>
+      <field name="arch" type="xml">
+        <form>
+            <header>
+                <button name="save_barcode" type="object" string="Save barcode"/>
+            </header>
+            <sheet>
+                <group>
+                    <field name="status"/>
+                    <field name="response"/>
+                </group>
+            </sheet>
+            <div class="oe_chatter">
+                <field name="message_follower_ids" widget="mail_followers"/>
+                <field name="message_ids" widget="mail_thread"/>
+            </div>
+        </form>
+      </field>
+    </record>
+      
+      <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="itl_99_minutos_notification_action_window">
+      <field name="name">99 minutos notification</field>
+      <field name="res_model">itl.99.minutos.notification</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Top menu item -->
+    <menuitem id="menu_99_minutos"
+              parent="account.menu_finance_configuration"
+              name="99 minutos"
+              sequence="5"/>
+
+    <menuitem id="menu_99minutos_notifications"
+              parent="itl_99_minutos.menu_99_minutos"
+              name="99 minutos notifications"
+              action="itl_99_minutos.itl_99_minutos_notification_action_window"
+              sequence="1"/>
+      
+    </data>
+</odoo>

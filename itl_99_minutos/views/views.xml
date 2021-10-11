@@ -1,0 +1,58 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="itl_99_minutos_list">
+      <field name="name">itl_99_minutos list</field>
+      <field name="model">itl.99.minutos.order</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="operation_type"/>
+          <field name="url_used"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="itl_99_minutos_form">
+      <field name="name">itl_99_minutos form</field>
+      <field name="model">itl.99.minutos.order</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="operation_type"/>
+                <field name="url_used"/>
+                <field name="url_body"/>
+                <field name="status_code"/>
+                <field name="response"/>
+                <field name="counter"/>
+                <field name="trackingid"/>
+                <field name="stock_picking_id"/>
+              </group>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="itl_99_minutos_order_action_window">
+      <field name="name">99 minutos order</field>
+      <field name="res_model">itl.99.minutos.order</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Top menu item -->
+    <!--
+    <menuitem id="itl_99_minutos_order_menu"
+              parent="abs_sr_api.menu_sr_configure"
+              name="99 minutos orders"
+              action="itl_99_minutos_order_action_window"
+              sequence="2"/>
+      -->
+
+  </data>
+</odoo>

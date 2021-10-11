@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_subscription_view_form_inh" model="ir.ui.view">
+        <field name="name">sale.subscription.form</field>
+        <field name="model">sale.subscription</field>
+        <field name="inherit_id" ref="sale_subscription.sale_subscription_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='close_reason_id']" position="after">
+                <field name="order_ref_id"/>
+                <field name="partner_id_ref"/>
+                <field name="account_id_ref"/>
+                <field name="subscription_id_ref"/>
+                <field name="iccid_number"/>
+                <field name="msisdn_number"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        
+        <record id="group_sr_admin" model="res.groups">
+            <field name="name">Permisos especiales en SR</field>
+            <field name="category_id" ref="base.module_category_hidden"/>
+        </record>
+        <!--
+        <record model="ir.module.category" id="module_management_sr">
+             <field name="name">Separate Reality</field>
+             <field name="description">Acceso a módulo de SR</field>
+             <field name="sequence">20</field>
+        </record>
+        
+        <record id="sr_user" model="res.groups">
+            <field name="name">Usuario</field>
+            <field name="category_id" ref="module_management_sr"/>
+        </record>
+
+        <record id="sr_admin" model="res.groups">
+            <field name="name">Administrador</field>
+            <field name="category_id" ref="module_management_sr"/>
+            <field name="implied_ids" eval="[(4, ref('itl_sr_interface.sr_user'))]"/>
+        </record>
+        -->
+    </data>
+</odoo>

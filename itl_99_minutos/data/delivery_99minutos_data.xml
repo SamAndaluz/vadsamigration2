@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="product_product_delivery_99minutos" model="product.product">
+            <field name="name">99 minutos MX</field>
+            <field name="default_code">99minutos_mx</field>
+            <field name="type">service</field>
+            <field name="categ_id" ref="delivery.product_category_deliveries"/>
+            <field name="sale_ok" eval="False"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="list_price">0.0</field>
+        </record>
+        <record id="delivery_carrier_99minutos_dom" model="delivery.carrier">
+            <field name="name">99 minutos MX</field>
+            <field name="product_id" ref="itl_99_minutos.product_product_delivery_99minutos"/>
+            <field name="delivery_type">_99minutos</field>
+            <field name="_99m_deliveryType">nextDay</field>
+            <field name="_99m_packageSize">xs</field>
+            <field name="_99m_url_prod">https://prd-dot-precise-line-76299minutos.appspot.com/api/v1/autorization/order</field>
+            <field name="_99m_url_dev">https://deploy-dot-precise-line-76299minutos.appspot.com/api/v1/autorization/order</field>
+            <field name="_99m_url_shipping_rate_prod">https://prd-dot-precise-line-76299minutos.appspot.com/api/v1/shipping/rates</field>
+            <field name="_99m_url_shipping_rate_dev">https://deploy-dot-precise-line-76299minutos.appspot.com/api/v1/shipping/rates</field>
+        </record>
+
+        <record id="99minutos_packaging_xs" model="product.packaging">
+            <field name="name">XS (1 kg)</field>
+            <field name="shipper_package_code">xs</field>
+            <field name="package_carrier_type">_99minutos</field>
+            <field name="max_weight">1</field>
+        </record>
+        <record id="99minutos_packaging_s" model="product.packaging">
+            <field name="name">S (1 - 2 Kg)</field>
+            <field name="shipper_package_code">s</field>
+            <field name="package_carrier_type">_99minutos</field>
+            <field name="max_weight">2</field>
+        </record>
+        <record id="99minutos_packaging_m" model="product.packaging">
+            <field name="name">M (2 - 3 Kg)</field>
+            <field name="shipper_package_code">m</field>
+            <field name="package_carrier_type">_99minutos</field>
+            <field name="max_weight">3</field>
+        </record>
+        <record id="99minutos_packaging_l" model="product.packaging">
+            <field name="name">L (3 - 5 Kg)</field>
+            <field name="shipper_package_code">l</field>
+            <field name="package_carrier_type">_99minutos</field>
+            <field name="max_weight">5</field>
+        </record>
+        <record id="99minutos_packaging_xl" model="product.packaging">
+            <field name="name">XL (5 - 25 Kg)</field>
+            <field name="shipper_package_code">xl</field>
+            <field name="package_carrier_type">_99minutos</field>
+            <field name="max_weight">25</field>
+        </record>
+
+    </data>
+</odoo>

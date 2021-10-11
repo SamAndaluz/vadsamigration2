@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="30"/>
+        <field name="inherit_id" ref="base_setup.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <!--<xpath expr="//div[@id='product_general_settings']" position="after">-->
+            <div data-key="general_settings" position="inside">
+                <h2>Separate Reality Active MQ Configuration</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Host
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_host"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Port
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_port"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Key path
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_key_path"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Password
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_password" password="True"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Subscription queue
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_queue"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Subscription response queue
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_response_queue"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <h2>Separate Reality - Sale Order with SIM configutation</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                SIM Product
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_sim_product_id"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                ROKiT Product
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_rokit_product_id"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Warehouse for SO
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_warehouse_id"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Delivery carrier SO
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_carrier_id"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Default company
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_company_id"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Tax to add to subscription product
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_tax_id"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Journal for payment invoice
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_payment_journal_id"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Activation Legacy Product Name
+                            </span>
+                            <div class="text-muted">
+                                <field name="sr_activation_legacy_product_name"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </field>
+    </record>
+</odoo>

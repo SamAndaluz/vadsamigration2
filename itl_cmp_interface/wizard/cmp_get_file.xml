@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_cmp_get_file_form" model="ir.ui.view">
+        <field name="name">view_cmp_get_file.form</field>
+        <field name="model">cmp.get.file</field>
+        <field name="arch" type="xml">
+            <form>
+                <h4>Click on button to do an action</h4>
+                <group>
+                    <button name="do_action" type="object" string="Get Recurring prepayments extract files" class="oe_link" context="{'recurring': True}"/>
+                    <button name="do_action" type="object" string="Get Receipt print extract" class="oe_link" context="{'receipt': True}"/>
+                    <button name="do_action" type="object" string="Get Datawarehouse extract" class="oe_link" context="{'datawarehouse': True}"/>
+                    <button name="do_action_rename" type="object" string="Rename Recurring prepayments extract files" class='oe_link' groups="base.group_no_one" context="{'recurring': True}"/>
+                    <button name="do_action_rename" type="object" string="Rename Receipt print extract" class='oe_link' groups="base.group_no_one" context="{'receipt': True}"/>
+                    <button name="do_action_rename" type="object" string="Rename Datawarehouse extract" class='oe_link' groups="base.group_no_one" context="{'datawarehouse': True}"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="cmp_get_file_action" model="ir.actions.act_window">
+        <field name="name">Get CMP file</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cmp.get.file</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_cmp_get_file_form"/>
+    </record>
+
+    <!--
+    <menuitem id="menu_sr_get_message"
+              parent="abs_sr_api.menu_sr_configure"
+              name="Get queue messages"
+              action="view_sr_get_message_action"
+              sequence="2"/>
+    -->
+</odoo>

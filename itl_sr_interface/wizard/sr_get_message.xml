@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_sr_get_message_form" model="ir.ui.view">
+        <field name="name">view_sr_get_message.form</field>
+        <field name="model">sr.get.message</field>
+        <field name="arch" type="xml">
+        <form string="Do Place Order Event">
+            <h4>Click on button to read messages from SR ActiveMQ.</h4>
+            <footer>
+                <button name="get_messages_from_queue" type="object" string="Read messages" class='btn-default'/>
+            </footer>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_sr_get_message_action" model="ir.actions.act_window">
+        <field name="name">Read messages</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sr.get.message</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="view_id" ref="view_sr_get_message_form"/>
+    </record>
+
+    <record id="view_sr_get_message_log_form" model="ir.ui.view">
+        <field name="name">view_sr_get_message_log.form</field>
+        <field name="model">sr.get.message.log</field>
+        <field name="arch" type="xml">
+        <form string="">
+            <sheet>
+                <group>
+                    <field name="log" force_save="1"/>
+                    <field name="active_message_ids" readonly="1" force_save="1"/>
+                </group>
+            </sheet>
+        </form>
+        </field>
+    </record>
+
+    <record id="view_sr_get_message_log_tree" model="ir.ui.view">
+        <field name="name">view_sr_get_message_log_tree</field>
+        <field name="model">sr.get.message.log</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="log"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="view_sr_get_message_log_action_window">
+      <field name="name">Log</field>
+      <field name="res_model">sr.get.message.log</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--
+    <menuitem id="menu_sr_get_message"
+              parent="abs_sr_api.menu_sr_configure"
+              name="Get queue messages"
+              action="view_sr_get_message_action"
+              sequence="2"/>
+    -->
+</odoo>

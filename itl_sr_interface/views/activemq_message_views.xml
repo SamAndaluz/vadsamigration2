@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_activemq_message_tree" model="ir.ui.view">
+        <field name="name">activemq.message.tree</field>
+        <field name="model">activemq.message</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="name"/>
+                <field name="delivery_type" />
+                <field name="sale_delivery_message" />
+                <field name="customer_id" />
+                <field name="subscription_id_ref" />
+                <field name="iccid_number" />
+                <field name="msisdn_number" />
+                <field name="status"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_activemq_message_dpsoe_addon_tree" model="ir.ui.view">
+        <field name="name">activemq.message.dpsoe.addon.tree</field>
+        <field name="model">activemq.message</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="name"/>
+                <field name="product_category" />
+                <field name="customer_id" />
+                <field name="subscription_id_ref" />
+                <field name="iccid_number" />
+                <field name="msisdn_number" />
+                <field name="status"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_activemq_message_dpsoe_activation_tree" model="ir.ui.view">
+        <field name="name">activemq.message.dpsoe.activation.tree</field>
+        <field name="model">activemq.message</field>
+        <field name="arch" type="xml">
+            <tree default_order='create_date desc'>
+                <field name="name"/>
+                <field name="product_category" />
+                <field name="activation_subscription_id" />
+                <field name="activation_line_identifier" />
+                <field name="status"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+    
+    <record id="activemq_message_view_form" model="ir.ui.view">
+        <field name="name">activemq.message.view.form</field>
+        <field name="model">activemq.message</field>
+        <field name="arch" type="xml">
+            <form string="ActiveMQ Message">
+                <header>
+                    <button name="do_place_order_event" type="object" string="Process message" attrs="{'invisible': ['|',('status','=','done'),('name','!=','DoPlaceOrderEvent')]}"/>
+                    <button name="send_response_to_queue" type="object" string="Send response to queue" attrs="{'invisible': ['|',('name','!=','DoPlaceOrderEvent'),'|',('response_message_status','=','done'),'|',('product_category','!=','plan'),'|',('delivery_type','not in',['99minutos','already_have_a_sim'])]}"/>
+                    <button name="do_place_service_order_event" type="object" string="Process message" attrs="{'invisible': ['|',('status','=','done'),('name','!=','DoPlaceServiceOrderEvent')]}"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Información general del XML">
+                            <field name="has_permission_admin" invisible="1"/>
+                            <field name="name" attrs="{'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="product_category" attrs="{'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="delivery_type" attrs="{'invisible': [('product_category','!=','plan')], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="message_id" attrs="{'readonly': [('has_permission_admin','=',False)], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="service_source" attrs="{'invisible': [('name','=','DoPlaceOrderEvent')], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="already_processed" attrs="{'invisible': [('name','=','DoPlaceOrderEvent')], 'readonly': [('has_permission_admin','=',False)]}"/>
+                        </group>
+                        <group string="Información procesada">
+                            <field name="sale_subscription_id" attrs="{'invisible': [('has_permission_admin','=',False)], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="customer_id" attrs="{'invisible': [('product_category','not in',['plan','addOn',False])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="subscription_id_ref" attrs="{'invisible': [('product_category','not in',['plan','addOn',False])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="iccid_number" attrs="{'invisible': [('product_category','not in',['plan','addOn',False])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="msisdn_number" attrs="{'invisible': [('product_category','not in',['plan','addOn',False])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="order_ref_id" attrs="{'invisible': [('product_category','not in',['plan','addOn',False])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="sale_order_id" attrs="{'invisible': [('product_category','not in',['plan','addOn',False])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="invoice_id" attrs="{'invisible': [('product_category','not in',['plan','addOn',False])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="activation_subscription_id" attrs="{'invisible': [('product_category','not in',['activation','balanceTransform','balanceTransfer','voicemail','portIn'])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="activation_line_identifier" attrs="{'invisible': [('product_category','not in',['activation','balanceTransform','balanceTransfer','voicemail','portIn'])], 'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="status" attrs="{'readonly': [('has_permission_admin','=',False)]}"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Respuesta para Separate Reality" attrs="{'invisible': ['|',('product_category','!=','plan'),('delivery_type','not in',['99minutos','already_have_a_sim'])]}">
+                            <field name="response_message" attrs="{'readonly': [('has_permission_admin','=',False)]}"/>
+                            <field name="response_message_status" attrs="{'readonly': [('has_permission_admin','=',False)]}"/>
+                        </group>
+                        <group string="XML de Separate Reality">
+                            <!--<field name="status"/>-->
+                            <field name="xml_message" attrs="{'readonly': [('has_permission_admin','=',False)]}"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_activemq_message_search" model="ir.ui.view">                                
+        <field name="name">activemq.message.search</field>                                
+        <field name="model">activemq.message</field>                                
+        <field name="arch" type="xml">                                    
+            <search string="Search ActiveMQ Messages">                                       
+                <group expand="0" string="Group By">                                            
+                    <filter string="Event type" name="name" context="{'group_by': 'name'}"></filter>                                 
+                </group>                                    
+            </search>                                
+        </field>                            
+    </record>
+
+    <!-- activemq.message action window -->
+    <record id="activemq_message_action" model="ir.actions.act_window">
+        <field name="name">ActiveMQ Message</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activemq.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_activemq_message_tree"/>
+        <field name="context">{'search_default_name': 1}</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for DoPlaceOrderEvent -->
+    <record id="activemq_message_dpoe_action" model="ir.actions.act_window">
+        <field name="name">DoPlaceOrderEvent</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activemq.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_activemq_message_tree"/>
+        <field name="domain">[('name','ilike','DoPlaceOrderEvent')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for DoPlaceServiceOrderEvent Addon-->
+    <record id="activemq_message_dpsoe_addon_action" model="ir.actions.act_window">
+        <field name="name">DoPlaceServiceOrderEvent AddOn</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activemq.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_activemq_message_dpsoe_addon_tree"/>
+        <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','addOn')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for DoPlaceServiceOrderEvent Activation-->
+    <record id="activemq_message_dpsoe_activation_action" model="ir.actions.act_window">
+        <field name="name">DoPlaceServiceOrderEvent Activation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activemq.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
+        <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','activation')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for DoPlaceServiceOrderEvent Transform-->
+    <record id="activemq_message_dpsoe_transform_action" model="ir.actions.act_window">
+        <field name="name">DoPlaceServiceOrderEvent Transform</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activemq.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
+        <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','balanceTransform')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for DoPlaceServiceOrderEvent Transfer-->
+    <record id="activemq_message_dpsoe_transfer_action" model="ir.actions.act_window">
+        <field name="name">DoPlaceServiceOrderEvent Transfer (Gift)</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activemq.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
+        <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','balanceTransfer')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for DoPlaceServiceOrderEvent Voicemail-->
+    <record id="activemq_message_dpsoe_voicemail_action" model="ir.actions.act_window">
+        <field name="name">DoPlaceServiceOrderEvent Voicemail</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activemq.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
+        <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','voicemail')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <!-- Action for DoPlaceServiceOrderEvent PortIn-->
+    <record id="activemq_message_dpsoe_portin_action" model="ir.actions.act_window">
+        <field name="name">DoPlaceServiceOrderEvent PortIn</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">activemq.message</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_type">form</field>
+        <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
+        <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','portIn')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">
+                <!-- Add Text Here -->
+            </p><p>
+                <!-- More details about what a user can do with this object will be OK --> 
+            </p>
+        </field>
+    </record>
+
+    <record id="reload_xml_message_action_server" model="ir.actions.server">
+        <field name="name">Get extra info</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_activemq_message"/>
+        <field name="binding_model_id" ref="model_activemq_message"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.reload_xml_message()
+        </field>
+    </record>
+
+    <record id="reload_xml_message_action_server_2" model="ir.actions.server">
+        <field name="name">Procesar DoPlaceServiceOrderEvent</field>
+        <field name="type">ir.actions.server</field>
+        <field name="model_id" ref="model_activemq_message"/>
+        <field name="binding_model_id" ref="model_activemq_message"/>
+        <field name="state">code</field>
+        <field name="code">
+            if records:
+                action = records.do_place_service_order_event_multi()
+        </field>
+    </record>
+
+    <!-- This Menu Item must have a parent and an action -->
+    <!--
+    <menuitem id="activemq_message_menu_act" name="ActiveMQ Messages" parent="abs_sr_api.menu_sr_configure" action="activemq_message_action" sequence="10"/>
+    -->
+    
+</odoo>

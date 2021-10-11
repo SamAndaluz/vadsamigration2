@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cmp_message,access_cmp_message,model_cmp_message,base.group_user,1,1,1,1
+access_cmp_receipt_print_extract,access_cmp_receipt_print_extract,model_cmp_receipt_print_extract,base.group_user,1,1,1,1
+access_cmp_datawarehouse_extract,access_cmp_datawarehouse_extract,model_cmp_datawarehouse_extract,base.group_user,1,1,1,1
+access_cmp_item,access_cmp_item,model_cmp_item,base.group_user,1,1,1,1
+access_cmp_message_log,access_cmp_message_log,model_cmp_message_log,base.group_user,1,1,1,1
+access_cmp_get_file,access_cmp_get_file,model_cmp_get_file,base.group_user,1,1,1,1

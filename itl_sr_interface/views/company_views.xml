@@ -1,0 +1,10 @@
+<odoo>
+    <record model="ir.rule" id="record_shared_multi_company_rule_active_mq_messages">
+        <field name="name">Shared Records: Active MQ Messages</field>
+        <field name="model_id" ref="itl_sr_interface.model_activemq_message"/>
+        <field name="global" eval="True"/>
+        <field name="domain_force">
+            ['|',('company_id','=',False),('company_id','child_of', [user.company_id.id])]
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend payment acquirer to add Bancard fields -->
+    <record id="acquirer_form_WPP" model="ir.ui.view">
+        <field name="name">acquirer.form.WPP</field>
+        <field name="model">payment.acquirer</field>
+        <field name="inherit_id" ref="payment.acquirer_form"/>
+        <field name="arch" type="xml">
+            <xpath expr='//group[@name="acquirer"]' position='after'>
+                <group attrs="{'invisible': [('provider', '!=', 'webpay_plus')]}">
+                    <field name="webpay_plus_company"/>
+                    <field name="webpay_plus_branch"/>
+                    <field name="webpay_plus_data0"/>
+                    <field name="webpay_plus_key"/>
+                    <field name="webpay_plus_endpoint"/>
+                    <field name="webpay_plus_user"/>
+                    <field name="webpay_plus_pwd" password="True"/>
+                    <a colspan="2" href="https://www.odoo.com/documentation/user/online/ecommerce/shopper_experience/authorize.html" target="_blank">How to get paid with WebPay Plus</a>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

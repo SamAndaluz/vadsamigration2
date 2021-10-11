@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_form_inh" model="ir.ui.view">
+        <field name="name">res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <field name="vat" position="after">
+                <field name="vat_invalid"/>
+            </field>
+            <xpath expr="//notebook" position="inside">
+                <page string="SR extra info">
+                    <group>
+                        <group>
+                            <field name="customer_id_ref"/>
+                        </group>
+                        <group></group>
+                    </group>
+                    <group>
+                        <field name="token_ids" nolabel="1">
+                            <tree>
+                                <field name="cardToken"/>
+                                <field name="cardType"/>
+                            </tree>
+                        </field>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="itl_sr_res_partner_form" model="ir.ui.view">
+        <field name="name">itl.sr.res.partner.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="l10n_mx_edi.mx_partner_address_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='city']" position="after">
+                <field name="itl_state" placeholder="Estado..."/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,31 @@
+<odoo>
+	<record id="view_order_form_with_carrier_inherit" model="ir.ui.view">
+		<field name="name">sale.order.form.inherit</field>
+		<field name="model">sale.order</field>
+		<field name="inherit_id" ref="delivery.view_order_form_with_carrier"/>
+		<field name="arch" type="xml">
+			<field name="carrier_id" position="replace">
+				<field name="carrier_id" domain="[('id', 'in', available_carrier_ids)]" context="{'order_id': id}" class="oe_inline" options="{'no_create': True, 'no_open': True}" attrs="{'readonly':[('state','not in',('draft','sent')),('update_delivery_method','=',False)]}"/> <i class="fa fa-check text-success" role="img" aria-label="Rating OK" title="Rating OK" attrs="{'invisible':['|','|',('carrier_id','=',False),('state','not in',('draft','sent')),('delivery_rating_success','=',False)]}"/>
+			</field>
+			<field name="carrier_id" position="after">
+				<field name="update_delivery_method" invisible="1"/>
+				<button name="set_update_delivery_method" type="object" string="Lock delivery method" attrs="{'invisible': ['|','|','|',('carrier_id','=',False),('state','in',('done','cancel')),('delivery_rating_success','=',True),('update_delivery_method','=',False)]}"/>
+				<button name="set_update_delivery_method" type="object" string="Update delivery method" attrs="{'invisible': ['|','|','|',('carrier_id','=',False),('state','in',('done','cancel')),('delivery_rating_success','=',True),('update_delivery_method','=',True)]}"/>
+			</field>
+			<button name="get_delivery_price" position="replace">
+				<button name="get_delivery_price" type="object" class="oe_inline oe_link" attrs="{'invisible':['|',('carrier_id','=',False),('state','in',('done','cancel'))]}"><i class="fa fa-arrow-right"/> Get rate</button>
+			</button>
+			<button name="set_delivery_line" position="replace">
+				<button name="set_delivery_line" type="object" class="oe_inline oe_link" attrs="{'invisible':['|','|',('carrier_id','=',False),('state','in',('done','cancel')),('delivery_rating_success','=',False)]}"><i class="fa fa-arrow-right"/> Add to order</button>
+			</button>
+		</field>
+	</record>
+</odoo>
+
+<!--
+
+<button name="get_delivery_price" type="object" class="oe_inline oe_link" attrs="{'invisible':['|',('carrier_id','=',False),('state','not in',('draft','sent'))]}"><i class="fa fa-arrow-right"/> Get rate</button>
+
+<button name="set_delivery_line" type="object" class="oe_inline oe_link" attrs="{'invisible':['|','|',('carrier_id','=',False),('state','not in',('draft','sent')),('delivery_rating_success','=',False)]}"><i class="fa fa-arrow-right"/> Add to order</button>
+
+-->

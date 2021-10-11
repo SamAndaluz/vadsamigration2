@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_invoice_form_inherited" model="ir.ui.view">
+        <field name="name">account.invoice.form.inherited</field>
+        <field name="model">account.invoice</field>
+        <field name="inherit_id" ref="account.invoice_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='reference']" position="after">
+                <field name = "stripe_payment_ref"/>
+            </xpath>
+            <xpath expr="//header" position="inside">
+                <button string="Send OXXO link" name="send_oxxo_link" type="object" class="btn-primary" attrs="{'invisible': [('state','!=','open')]}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

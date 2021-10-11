@@ -1,0 +1,11 @@
+<odoo>
+    <data>
+
+        <template id="assets_backend" name="itl_sr_interface" inherit_id="web.assets_backend">
+            <xpath expr="//script[last()]" position="after">
+                <link rel="stylesheet" href="/itl_sr_interface/static/src/css/sr.css"/>
+            </xpath>
+        </template>
+
+    </data>
+</odoo>

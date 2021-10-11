@@ -1,0 +1,120 @@
+<odoo>
+    <data>
+    <!-- explicit list view definition -->
+
+        <record model="ir.ui.view" id="itl_descarga_masiva_facturas_list">
+            <field name="name">itl_descarga_masiva_facturas list</field>
+            <field name="model">itl.request</field>
+            <field name="arch" type="xml">
+                <tree default_order='create_date desc'>
+                    <field name="tipoFactura"/>
+                    <field name="tipoSolicitud"/>
+                    <field name="fechaInicio"/>
+                    <field name="fechaFinal"/>
+                    <field name="status"/>
+                </tree>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="itl_descarga_masiva_facturas_form">
+            <field name="name">itl_descarga_masiva_facturas form</field>
+            <field name="model">itl.request</field>
+            <field name="arch" type="xml">
+                <form>
+                    <header>
+                        <field name="status" widget="statusbar" options="{'clickable': '1'}"/>
+                        <!--<field name="status" widget="statusbar"/>-->
+                        <button name="generar_solicitud" type="object" string="Generar solicitud" class="oe_highlight" attrs="{'invisible': [('status','in',['generada','terminada'])]}"/>
+                        <button name="estado_solicitud" type="object" string="Ver estado de la solicitud" class="oe_highlight" attrs="{'invisible': [('status','in',['nueva'])]}"/>
+                        <button name="obtener_paquetes" type="object" string="Descargar paquete" class="oe_highlight" attrs="{'invisible': [('status','in',['nueva','generada','terminada'])]}"/>
+                    </header>
+                    <sheet>
+                        <group string="Solicitud">
+                            <group>
+                                <field name="numeroSolicitud" readonly="1"/>
+                                <field name="tipoFactura"/>
+                                <field name="tipoSolicitud"/>
+                                <field name="rfcEmisor" invisible="1"/>
+                                <field name="rfcReceptor" invisible="1"/>
+                                <field name="rfcSolicitante" invisible="1"/>
+                                <field name="fechaInicio"/>
+                                <field name="fechaFinal"/>
+                                <field name="company_id" readonly="1"/>
+                            </group>
+                            <group invisible="1">
+                                <!--<field name="pfx" readonly="1"/>-->
+                                <field name="password" password="True" readonly="1"/>
+                                <field name="usuario" readonly="1"/>
+                                <field name="passPade" password="True" readonly="1"/>
+                                <field name="contrato" readonly="1"/>
+                                <field name="invoice_ids" readonly="1" invisible="1"/>
+                            </group>
+                        </group>
+                        <group>
+                            <group>
+                                <button name="ver_invoices" type="object" string="Ver facturas descargadas" class="oe_highlight" attrs="{'invisible': [('invoice_ids','=',False)]}"/>
+                            </group>
+                            <group></group>
+                        </group>
+                        <group string="Respuesta">
+                                <field name="response_ids" nolabel="1">
+                                    <tree create="false" delete="true" editable="false" class="my_class">
+                                        <!--<field name="numeroSolicitud"/>-->
+                                        <field name="estadoSolicitud"/>
+                                        <field name="mensaje"/>
+                                        <field name="respuestaSAT"/>
+                                        <field name="paquetes"/>
+                                        <field name="create_date"/>
+                                    </tree>
+                                </field>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="itl_descarga_masiva_facturas_action_window">
+      <field name="name">Requests</field>
+      <field name="res_model">itl.request</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="itl_descarga_masiva_facturas.action_server">
+      <field name="name">itl_descarga_masiva_facturas server</field>
+      <field name="model_id" ref="model_itl_descarga_masiva_facturas_itl_descarga_masiva_facturas"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "tree,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+
+    <menuitem name="Descarga masiva de facturas" id="itl_descarga_masiva_facturas.menu_root" web_icon="itl_descarga_masiva_facturas,static/description/icon.png" groups="itl_descarga_masiva_facturas.group_show_descarga_masiva"/>
+
+    <!-- menu categories -->
+
+    <menuitem name="Solicitudes" id="itl_descarga_masiva_facturas.menu_1" parent="itl_descarga_masiva_facturas.menu_root" action="itl_descarga_masiva_facturas_action_window"/>
+
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="itl_descarga_masiva_facturas.menu_1_list" parent="itl_descarga_masiva_facturas.menu_1"
+              action="itl_descarga_masiva_facturas.action_window"/>
+    <menuitem name="Server to list" id="itl_descarga_masiva_facturas" parent="itl_descarga_masiva_facturas.menu_2"
+              action="itl_descarga_masiva_facturas.action_server"/>
+-->
+  </data>
+</odoo>

@@ -1,0 +1,5 @@
+.o_form_view .o_group.o_inner_group > tbody > tr > td.o_td_label {
+    width: 0%;
+    padding: 0 5px 0 0 !important;
+    min-width: 110px !important;
+}

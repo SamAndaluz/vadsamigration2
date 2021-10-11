@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_itl_99_minutos_order,access_itl_99_minutos_order,model_itl_99_minutos_order,base.group_user,1,1,1,1
+access_itl_99_minutos_notification,access_itl_99_minutos_notification,model_itl_99_minutos_notification,base.group_user,1,1,1,1
