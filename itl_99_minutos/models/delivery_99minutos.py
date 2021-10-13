@@ -12,7 +12,7 @@ class NoventayNueveMinutosProvider(models.Model):
     _inherit = "delivery.carrier"
 
 
-    delivery_type = fields.Selection(selection_add=[('_99minutos', "99minutos")])
+    delivery_type = fields.Selection(selection_add=[('_99minutos', "99minutos")], ondelete={"_99minutos": "cascade"})
 
     _99m_apikey_prod = fields.Char(string="Apikey prod")
     _99m_apikey_dev = fields.Char(string="Apikey dev")
@@ -64,17 +64,16 @@ class NoventayNueveMinutosProvider(models.Model):
                     'price': 0.0,
                     'error_message': _('Error: the customer zip code in delivery address is missing.'),
                     'warning_message': False}
-        
-        if not order.carrier_id._99m_default_packaging_id:
+        if not self._99m_default_packaging_id:
             return {'success': False,
                     'price': 0.0,
                     'error_message': _('Error: the delivery method has not set Default Packing Type.'),
                     'warning_message': False}
         
-        weight = order.carrier_id._99m_default_packaging_id.max_weight
-        width = order.carrier_id._99m_default_packaging_id.width
-        depth = order.carrier_id._99m_default_packaging_id.length
-        height = order.carrier_id._99m_default_packaging_id.height
+        weight = self._99m_default_packaging_id.max_weight
+        width = self._99m_default_packaging_id.width
+        depth = self._99m_default_packaging_id.packaging_length
+        height = self._99m_default_packaging_id.height
         
         if weight == 0:
             return {'success': False,
@@ -116,19 +115,18 @@ class NoventayNueveMinutosProvider(models.Model):
 
         auth_token = ""
         url = ""
-        if order.carrier_id.prod_environment:
-            auth_token = order.carrier_id._99m_apikey_prod
-            url = order.carrier_id._99m_url_shipping_rate_prod
+        if self.prod_environment:
+            auth_token = self._99m_apikey_prod
+            url = self._99m_url_shipping_rate_prod
         else:
-            auth_token = order.carrier_id._99m_apikey_dev
-            url = order.carrier_id._99m_url_shipping_rate_dev
+            auth_token = self._99m_apikey_dev
+            url = self._99m_url_shipping_rate_dev
             
         body_json = json.dumps(body)
         newHeaders = {'Content-type': 'application/json',
                     'Authorization': 'Bearer ' + auth_token
         }
-        #_logger.info("-> body: " + str(body_json))
-        #_logger.info("-> newHeaders: " + str(newHeaders))
+        
         response_json = False
         try:
             response = requests.post(url, data=body_json, headers=newHeaders)
@@ -147,7 +145,7 @@ class NoventayNueveMinutosProvider(models.Model):
         if response.status_code == 200:
             for n in  response_json['message']:
                 delivery_method = str(n['deliveryType']['description']).lower()
-                dm = str(order.carrier_id._99m_deliveryType).lower()
+                dm = str(self._99m_deliveryType).lower()
                 if dm in delivery_method:
                     price = n['cost']
                     flag = True
@@ -190,7 +188,7 @@ class NoventayNueveMinutosProvider(models.Model):
                         mail_create.send()
                         emails_name = ''
                         res_partner_ids = self.env['res.partner'].browse(res_partner_ids_notification_99minutos)
-                        _logger.info("------> res_partner_ids: " + str(res_partner_ids))
+                        
                         for rp in res_partner_ids:
                             emails_name += rp.email + ', '
                         order.message_post(body="La Sale Order " + str(order.name) + " no tiene cobertura de envío con 99 minutos. Notificación enviada por correo electrónico a las direcciones: " + str(emails_name))

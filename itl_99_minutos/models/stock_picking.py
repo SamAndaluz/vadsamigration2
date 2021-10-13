@@ -42,10 +42,8 @@ class StockPickingCustom(models.Model):
         
         return record
 
-    
-    @api.multi
+
     def send_to_shipper(self):
-        _logger.info("-> send_to_shipper")
         self.ensure_one()
         res = self.carrier_id.send_shipping(self)
         if res:
@@ -87,7 +85,6 @@ class StockPickingCustom(models.Model):
                 'body_html': mail_contain,
                 'auto_delete': False
             })
-            _logger.info("mail_create >>>>>>>>>" + str(mail_create))
             if mail_create:
                 mail_create.send()
                 self.message_post(body="Se envió el correo de seguimiento al cliente.")
@@ -101,9 +98,6 @@ class StockMove(models.Model):
         processing of the given quant.
         """
         self.ensure_one()
-        _logger.info("**> qty: " + str(qty))
-        _logger.info("**> cost: " + str(cost))
-        _logger.info("**> force_valuation_amount: " + str(self._context.get('force_valuation_amount')))
         if self._context.get('force_valuation_amount'):
             valuation_amount = self._context.get('force_valuation_amount')
         else:
@@ -112,10 +106,7 @@ class StockMove(models.Model):
         # the standard_price of the product may be in another decimal precision, or not compatible with the coinage of
         # the company currency... so we need to use round() before creating the accounting entries.
         debit_value = self.company_id.currency_id.round(valuation_amount)
-        _logger.info("**> debit_value: " + str(debit_value))
         # check that all data is correct
-        _logger.info("**> is_zero: " + str(self.company_id.currency_id.is_zero(debit_value)))
-        _logger.info("**> allow_zero_cost: " + str(self.env['ir.config_parameter'].sudo().get_param('stock_account.allow_zero_cost')))
         if self.company_id.currency_id.is_zero(debit_value) and not self.env['ir.config_parameter'].sudo().get_param('stock_account.allow_zero_cost'):
             raise UserError(_("The cost of %s is currently equal to 0. Change the cost or the configuration of your product to avoid an incorrect valuation.") % (self.product_id.display_name,))
         credit_value = debit_value

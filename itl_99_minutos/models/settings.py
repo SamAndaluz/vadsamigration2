@@ -10,7 +10,9 @@ class _99MinutosSettings(models.TransientModel):
     
     @api.model
     def _get_delivery_address_domain(self):
-        return [('parent_id', '=', self.env.user.company_id.partner_id.id),('company_id','=',self.env.user.company_id.id),('type','=','delivery')]
+        _logger.info("---> self.env.user.company_id.partner_id: " + str(self.env.user.company_id.partner_id))
+        _logger.info("---> self.env.user.company_id: " + str(self.env.user.company_id))
+        return [('type','=','delivery')]
 
     delivery_address_99_minutos = fields.Many2one('res.partner', string="Delivery address", domain=_get_delivery_address_domain, readonly=False)
     
@@ -38,7 +40,7 @@ class _99MinutosSettings(models.TransientModel):
         )
         return res
 
-    @api.multi
+    
     def set_values(self):
         super(_99MinutosSettings, self).set_values()
         param = self.env['ir.config_parameter'].sudo()
