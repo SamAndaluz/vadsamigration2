@@ -31,7 +31,7 @@
         'views/product_views.xml',
         'views/res_partner_views.xml',
         'views/sale_subscription_views.xml',
-        'views/sale_views.xml',
+        #'views/sale_views.xml',
         'views/settings_views.xml',
         'wizard/sr_get_message.xml',
         'views/templates.xml',

@@ -122,7 +122,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">activemq.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="view_id" ref="view_activemq_message_tree"/>
         <field name="context">{'search_default_name': 1}</field>
         <field name="help" type="html">
@@ -140,7 +139,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">activemq.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="view_id" ref="view_activemq_message_tree"/>
         <field name="domain">[('name','ilike','DoPlaceOrderEvent')]</field>
         <field name="help" type="html">
@@ -158,7 +156,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">activemq.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="view_id" ref="view_activemq_message_dpsoe_addon_tree"/>
         <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','addOn')]</field>
         <field name="help" type="html">
@@ -176,7 +173,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">activemq.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
         <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','activation')]</field>
         <field name="help" type="html">
@@ -194,7 +190,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">activemq.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
         <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','balanceTransform')]</field>
         <field name="help" type="html">
@@ -212,7 +207,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">activemq.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
         <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','balanceTransfer')]</field>
         <field name="help" type="html">
@@ -230,7 +224,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">activemq.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
         <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','voicemail')]</field>
         <field name="help" type="html">
@@ -248,7 +241,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">activemq.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="view_id" ref="view_activemq_message_dpsoe_activation_tree"/>
         <field name="domain">[('name','ilike','DoPlaceServiceOrderEvent'),('product_category','=','portIn')]</field>
         <field name="help" type="html">

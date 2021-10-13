@@ -99,7 +99,7 @@ class SaleSubscription(models.Model):
 class SaleSubscriptionWizard(models.TransientModel):
     _inherit = 'sale.subscription.wizard'
 
-    @api.multi
+    
     def itl_create_sale_order(self):
         fpos_id = self.env['account.fiscal.position'].get_fiscal_position(self.subscription_id.partner_id.id)
         sale_order_obj = self.env['sale.order']

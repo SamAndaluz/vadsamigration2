@@ -30,7 +30,7 @@ class AbsSrConfi(models.TransientModel):
         )
         return res
 
-    @api.multi
+    
     def set_values(self):
         super(AbsSrConfi, self).set_values()
         param = self.env['ir.config_parameter'].sudo()
