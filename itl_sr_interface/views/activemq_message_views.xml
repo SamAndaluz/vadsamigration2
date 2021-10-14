@@ -57,7 +57,7 @@
             <form string="ActiveMQ Message">
                 <header>
                     <button name="do_place_order_event" type="object" string="Process message" attrs="{'invisible': ['|',('status','=','done'),('name','!=','DoPlaceOrderEvent')]}"/>
-                    <button name="send_response_to_queue" type="object" string="Send response to queue" attrs="{'invisible': ['|',('name','!=','DoPlaceOrderEvent'),'|',('response_message_status','=','done'),'|',('product_category','!=','plan'),'|',('delivery_type','not in',['99minutos','already_have_a_sim'])]}"/>
+                    <button name="send_response_to_queue" type="object" string="Send response to queue" attrs="{'invisible': ['|','|','|',('name','!=','DoPlaceOrderEvent'),('response_message_status','=','done'),('product_category','!=','plan'),('delivery_type','not in',['99minutos','already_have_a_sim'])]}"/>
                     <button name="do_place_service_order_event" type="object" string="Process message" attrs="{'invisible': ['|',('status','=','done'),('name','!=','DoPlaceServiceOrderEvent')]}"/>
                 </header>
                 <sheet>
@@ -108,7 +108,8 @@
         <field name="name">activemq.message.search</field>                                
         <field name="model">activemq.message</field>                                
         <field name="arch" type="xml">                                    
-            <search string="Search ActiveMQ Messages">                                       
+            <search string="Search ActiveMQ Messages">
+                <field name="xml_message" />
                 <group expand="0" string="Group By">                                            
                     <filter string="Event type" name="name" context="{'group_by': 'name'}"></filter>                                 
                 </group>                                    

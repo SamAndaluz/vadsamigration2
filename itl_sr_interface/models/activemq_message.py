@@ -36,7 +36,7 @@ class ActivemqMessage(models.Model):
     xml_message = fields.Text(string="Mensaje XML")
     status = fields.Selection([('new','Nuevo'),('done','Procesado correctamente'),('error','Error al procesar')], default='new', copy=False)
 
-    invoice_id = fields.Many2one('account.invoice', string="Factura", store=True, copy=False)
+    invoice_id = fields.Many2one('account.move', string="Factura", store=True, copy=False)
     sale_order_id = fields.Many2one('sale.order', string="Orden de venta", store=True, copy=False)
     sale_delivery_message = fields.Char(related="sale_order_id.delivery_message", string="Mensaje de entrega")
     sale_subscription_id = fields.Many2one('sale.subscription', string="Suscripción", store=True, copy=False)
@@ -238,11 +238,11 @@ class ActivemqMessage(models.Model):
                             if not record.invoice_id:
                                 invoice_id = record.with_context(force_company=record.company_id.id).create_invoice(sale_order_id)
                                 record.invoice_id = invoice_id
-                                invoice_id.action_invoice_open()
+                                invoice_id.action_post()
                             else:
                                 invoice_id = record.invoice_id
                                 if invoice_id.state in ['draft']:
-                                    invoice_id.action_invoice_open()
+                                    invoice_id.action_post()
                             
                             _logger.info("-> After create invoice")
                             _logger.info("--> invoice_id.l10n_mx_edi_cfdi_uuid: " + str(invoice_id.l10n_mx_edi_cfdi_uuid))
@@ -549,15 +549,15 @@ class ActivemqMessage(models.Model):
                         _logger.info("--> invoice_id.l10n_mx_edi_cfdi_uuid: " + str(invoice_id.l10n_mx_edi_cfdi_uuid))
                         record.invoice_id = invoice_id
                         if is_rokit:
-                            invoice_id.with_context(not_sign=True).action_invoice_open()
+                            invoice_id.with_context(not_sign=True).action_post()
                         else:
-                            invoice_id.action_invoice_open()
+                            invoice_id.action_post()
                     else:
                         invoice_id = record.invoice_id
                         if invoice_id.state in ['draft'] and not is_rokit:
-                            invoice_id.action_invoice_open()
+                            invoice_id.action_post()
                         if invoice_id.state in ['draft'] and is_rokit:
-                            invoice_id.with_context(not_sign=True).action_invoice_open()
+                            invoice_id.with_context(not_sign=True).action_post()
                     _logger.info("-> After create invoice")
                     _logger.info("--> invoice_id.l10n_mx_edi_cfdi_uuid: " + str(invoice_id.l10n_mx_edi_cfdi_uuid))
                     if invoice_id.l10n_mx_edi_cfdi_uuid:
@@ -823,7 +823,7 @@ class ActivemqMessage(models.Model):
 
         description = '\n'.join(product_items)
         
-        sat_code = self.env['l10n_mx_edi.product.sat.code'].search([('code','=','81161700')])
+        sat_code = self.env['product.unspsc.code'].search([('code','=','81161700')])
         sat_code_id = False
         if sat_code:
             sat_code_id = sat_code.id
@@ -850,7 +850,7 @@ class ActivemqMessage(models.Model):
             'productLegacyId': product_info['productLegacyId'],
             'isRecurring': isRecurring,
             'productCategory': product_category,
-            'l10n_mx_edi_code_sat_id': sat_code_id,
+            'unspsc_code_id': sat_code_id,
             'taxes_id': [(6, 0, [sr_tax_id.id])]
         }
 
@@ -872,8 +872,8 @@ class ActivemqMessage(models.Model):
         
         if sr_warehouse_id:
             data_sale.update({'warehouse_id': sr_warehouse_id.id})
-            if sr_warehouse_id.operating_unit_id:
-                data_sale.update({'operating_unit_id': sr_warehouse_id.operating_unit_id.id})
+            #if sr_warehouse_id.operating_unit_id:
+            #    data_sale.update({'operating_unit_id': sr_warehouse_id.operating_unit_id.id})
         if not iccid:
             if sim_product_id:
                 order_lines.append((0, 0, {'product_id': sim_product_id.id, 'price_unit': 0.1}))
@@ -918,16 +918,49 @@ class ActivemqMessage(models.Model):
             self.company_id = self.env['res.company'].search([('id','=',sr_company_id)])[0]
 
         sr_warehouse_id = self.company_id.sr_warehouse_id
-        operating_unit = sr_warehouse_id.operating_unit_id
+        #operating_unit = sr_warehouse_id.operating_unit_id
         if not sr_warehouse_id:
             sr_warehouse_id = 1
-        invoice_id = sale_order_id.with_context({'default_warehouse_id': sr_warehouse_id, 'default_company_id': sr_company_id, 'force_company': sr_company_id, 'default_operating_unit_id': operating_unit.id, 'default_user_id': False}).action_invoice_create()[0]
-        invoice_id = self.env['account.invoice'].browse(invoice_id)
+        #invoice_id = sale_order_id.with_context({'default_warehouse_id': sr_warehouse_id, 'default_company_id': sr_company_id, 'force_company': sr_company_id, 'default_operating_unit_id': operating_unit.id, 'default_user_id': False})._create_invoices()[0]
+        _logger.info("+++++> sale_order_id: " + str(sale_order_id))
+        _logger.info("+++++> default_warehouse_id: " + str(sr_warehouse_id.id))
+        _logger.info("+++++> Before create invoice")
+        invoice_id = sale_order_id.with_context({'default_warehouse_id': sr_warehouse_id.id, 'default_user_id': False})._create_invoices()
+        _logger.info("+++++> invoice_id: " + str(invoice_id))
+        #nvoice_id = self.env['account.move'].browse(invoice_id)
         invoice_id.user_id = False
 
         return invoice_id
     
     def create_payment(self, invoice):
+        """
+        Crea pago para la factura indicada
+        """
+        
+        sr_payment_journal_id = 21
+        if not sr_payment_journal_id:
+            raise ValidationError("No se econtró el diario de pago de factura.")
+
+        payment_type = 'inbound' if invoice.type in ('out_invoice', 'in_refund') else 'outbound'
+        if payment_type == 'inbound':
+            payment_method = self.env.ref('account.account_payment_method_manual_in')
+        else:
+            payment_method = self.env.ref('account.account_payment_method_manual_out')
+
+
+        Payment = self.env['account.payment'].with_context(default_invoice_ids=[(4, invoice.id, False)])
+        payment = Payment.create({
+            'payment_date': invoice.date,
+            'payment_method_id': payment_method.id,
+            'payment_type': payment_type,
+            'partner_type': 'supplier',
+            'partner_id': invoice.partner_id.id,
+            'amount': invoice.amount_total,
+            'journal_id': sr_payment_journal_id
+        })
+        return payment
+    
+    def create_payment_(self, invoice):
         """
         Crea pago para la factura indicada
         """
