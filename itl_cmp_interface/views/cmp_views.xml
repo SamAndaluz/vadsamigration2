@@ -162,7 +162,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">cmp.message</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 <!-- Add Text Here -->
@@ -177,7 +176,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">cmp.receipt.print.extract</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 <!-- Add Text Here -->
@@ -192,7 +190,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">cmp.datawarehouse.extract</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 <!-- Add Text Here -->
@@ -261,7 +258,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">cmp.item</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 <!-- Add Text Here -->
@@ -276,7 +272,6 @@
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">cmp.message.log</field>
         <field name="view_mode">tree,form</field>
-        <field name="view_type">form</field>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">
                 <!-- Add Text Here -->

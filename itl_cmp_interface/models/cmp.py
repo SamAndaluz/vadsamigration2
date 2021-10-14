@@ -640,7 +640,7 @@ class CmpMessage(models.Model):
 			invoice_id_str = reference.split('_')[1]
 			if invoice_id_str != 'none':
 				invoice_id = int(invoice_id_str)
-				invoice_obj_id = self.env['account.invoice'].browse(invoice_id)
+				invoice_obj_id = self.env['account.move'].browse(invoice_id)
 			if 'ERROR' in fname:
 				response_code = record[-1]
 			else:
@@ -712,7 +712,7 @@ class CmpMessage(models.Model):
 			invoice_id_str = reference.split('_')[1]
 			if invoice_id_str != 'none':
 				invoice_id = int(invoice_id_str)
-				invoice_obj_id = self.env['account.invoice'].browse(invoice_id)
+				invoice_obj_id = self.env['account.move'].browse(invoice_id)
 			if 'ERROR' in fname:
 				response_code = record[-1]
 			else:
@@ -818,7 +818,7 @@ class CmpMessage(models.Model):
 				invoice_id_str = reference.split('_')[1]
 				if invoice_id_str != 'none':
 					invoice_id = int(invoice_id_str)
-					invoice_obj_id = self.env['account.invoice'].browse(invoice_id)
+					invoice_obj_id = self.env['account.move'].browse(invoice_id)
 				if 'ERROR' in fname:
 					response_code = record[-1]
 				else:
@@ -925,7 +925,7 @@ class CmpMessage(models.Model):
 				invoice_id_str = reference.split('_')[1]
 				if invoice_id_str != 'none':
 					invoice_id = int(invoice_id_str)
-					invoice_obj_id = self.env['account.invoice'].browse(invoice_id)
+					invoice_obj_id = self.env['account.move'].browse(invoice_id)
 				if 'ERROR' in fname:
 					response_code = record[-1]
 				else:
@@ -1141,7 +1141,7 @@ class CmpMessage(models.Model):
 						untaxed_price = price / 1.16
 						inv_line[2]['price_unit'] = untaxed_price
 						_logger.info("---<> inv_line: " + str(inv_line))
-					#new_invoice = self.env['account.invoice'].with_context(context_company).create(invoice_values)
+					#new_invoice = self.env['account.move'].with_context(context_company).create(invoice_values)
 					_logger.info("----> invoice_values: " + str(invoice_values))
 					raise ValidationError(_("Testing..."))
 
@@ -1249,7 +1249,7 @@ class CmpItem(models.Model):
 	company_id = fields.Many2one('res.company', string="Compañía", readonly=True, store=True, default=_get_default_company)
 										
 
-	invoice_id = fields.Many2one('account.invoice', string="Related Invoice", readonly=True, store=True, copy=False)
+	invoice_id = fields.Many2one('account.move', string="Related Invoice", readonly=True, store=True, copy=False)
 	cmp_message_id = fields.Many2one('cmp.message', readonly=True, store=True, copy=False, ondelete='cascade')
 
 	def process_document(self):

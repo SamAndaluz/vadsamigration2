@@ -23,7 +23,6 @@
         <field name="name">Get CMP file</field>
         <field name="type">ir.actions.act_window</field>
         <field name="res_model">cmp.get.file</field>
-        <field name="view_type">form</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
         <field name="view_id" ref="view_cmp_get_file_form"/>
