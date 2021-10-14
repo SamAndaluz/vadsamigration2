@@ -117,7 +117,7 @@
                 name="99 minutos orders"
                 action="itl_99_minutos.itl_99_minutos_order_action_window"
                 sequence="14"/>
-      
+      <!--
       <menuitem id="menu_wpp"
                 parent="menu_vadsa_exis"
                 name="WebPay Plus"
@@ -128,7 +128,7 @@
                 name="WebPay Plus Notifications"
                 action="itl_webpay_plus.wpp_response_action_window"
                 sequence="5"/>
-
+        -->
       <menuitem id="vadsa_exis_config_menu" name="General Settings"
                 parent="menu_vadsa_exis" action="base_setup.action_general_configuration"/>
   </data>
