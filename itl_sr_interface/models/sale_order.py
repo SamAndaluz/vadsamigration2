@@ -26,9 +26,9 @@ class SaleOrderInherit(models.Model):
             res = order.carrier_id.rate_shipment(order)
             if res['success']:
                 order.delivery_rating_success = True
-                order.delivery_price = res['price']
+                #order.delivery_price = res['price']
                 order.delivery_message = res['warning_message']
             else:
                 order.delivery_rating_success = False
-                order.delivery_price = 0.0
+                #order.delivery_price = 0.0
                 order.delivery_message = res['error_message']

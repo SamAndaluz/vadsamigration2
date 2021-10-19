@@ -238,19 +238,21 @@ class ActivemqMessage(models.Model):
                             if not record.invoice_id:
                                 invoice_id = record.with_context(force_company=record.company_id.id).create_invoice(sale_order_id)
                                 record.invoice_id = invoice_id
-                                invoice_id.action_post()
                             else:
                                 invoice_id = record.invoice_id
-                                if invoice_id.state in ['draft']:
-                                    invoice_id.action_post()
+                                
+                            if invoice_id.state in ['draft']:
+                                invoice_id.action_post()
+                            if invoice_id.edi_state in ['to_send']:
+                                invoice_id.action_process_edi_web_services()
                             
                             _logger.info("-> After create invoice")
                             _logger.info("--> invoice_id.l10n_mx_edi_cfdi_uuid: " + str(invoice_id.l10n_mx_edi_cfdi_uuid))
                             if invoice_id.l10n_mx_edi_cfdi_uuid:
-                                if not invoice_id.state == 'paid':
+                                if not invoice_id.payment_state in ['paid','in_payment']:
                                     # Create payment
                                     payment = record.with_context(force_company=record.company_id.id).create_payment(invoice_id)
-                                    payment.post()
+                                    #payment.post()
                                     _logger.info("-> After pay invoice")
 
                                     record.send_mail(invoice_id)
@@ -271,7 +273,7 @@ class ActivemqMessage(models.Model):
                 if record.status == 'done':
                     if record.invoice_id and record.invoice_id.state == 'open' and record.invoice_id.l10n_mx_edi_cfdi_uuid:
                         payment = record.create_payment(record.invoice_id)
-                        payment.post()
+                        #payment.post()
             except Exception as e:
                 record.message_post(body="Exception: " + str(e.args[0]), subject="Registro no procesado")
                 record.status = 'error'
@@ -558,13 +560,16 @@ class ActivemqMessage(models.Model):
                             invoice_id.action_post()
                         if invoice_id.state in ['draft'] and is_rokit:
                             invoice_id.with_context(not_sign=True).action_post()
+                            
+                    if invoice_id.edi_state in ['to_send']:
+                        invoice_id.action_process_edi_web_services()
                     _logger.info("-> After create invoice")
                     _logger.info("--> invoice_id.l10n_mx_edi_cfdi_uuid: " + str(invoice_id.l10n_mx_edi_cfdi_uuid))
                     if invoice_id.l10n_mx_edi_cfdi_uuid:
-                        if not invoice_id.state == 'paid':
+                        if not invoice_id.payment_state in ['paid','in_payment']:
                             # Create payment
                             payment = record.create_payment(invoice_id)
-                            payment.post()
+                            #payment.post()
                             _logger.info("-> After pay invoice")
 
                             record.send_mail(invoice_id)
@@ -591,7 +596,7 @@ class ActivemqMessage(models.Model):
                 if record.status == 'done':
                     if record.invoice_id and record.invoice_id.state == 'open' and record.invoice_id.l10n_mx_edi_cfdi_uuid:
                         payment = record.create_payment(record.invoice_id)
-                        payment.post()
+                        #payment.post()
             except Exception as e:
                 record.message_post(body="Exception: " + str(e), subject="Registro no procesado")
                 record.status = 'error'
@@ -851,7 +856,8 @@ class ActivemqMessage(models.Model):
             'isRecurring': isRecurring,
             'productCategory': product_category,
             'unspsc_code_id': sat_code_id,
-            'taxes_id': [(6, 0, [sr_tax_id.id])]
+            'taxes_id': [(6, 0, [sr_tax_id.id])],
+            'invoice_policy': 'order'
         }
 
         product_id = self.env['product.product'].create(data_product)
@@ -932,38 +938,11 @@ class ActivemqMessage(models.Model):
 
         return invoice_id
     
-    def create_payment(self, invoice):
-        """
-        Crea pago para la factura indicada
-        """
-        
-        sr_payment_journal_id = 21
-        if not sr_payment_journal_id:
-            raise ValidationError("No se econtró el diario de pago de factura.")
-
-        payment_type = 'inbound' if invoice.type in ('out_invoice', 'in_refund') else 'outbound'
-        if payment_type == 'inbound':
-            payment_method = self.env.ref('account.account_payment_method_manual_in')
-        else:
-            payment_method = self.env.ref('account.account_payment_method_manual_out')
-
-
-        Payment = self.env['account.payment'].with_context(default_invoice_ids=[(4, invoice.id, False)])
-        payment = Payment.create({
-            'payment_date': invoice.date,
-            'payment_method_id': payment_method.id,
-            'payment_type': payment_type,
-            'partner_type': 'supplier',
-            'partner_id': invoice.partner_id.id,
-            'amount': invoice.amount_total,
-            'journal_id': sr_payment_journal_id
-        })
-        return payment
-    
     def create_payment_(self, invoice):
         """
         Crea pago para la factura indicada
         """
+        
         param = self.env['ir.config_parameter'].sudo()
         sr_company_id = param.get_param('itl_sr_interface.sr_company_id')
         if not self.company_id:
@@ -973,14 +952,47 @@ class ActivemqMessage(models.Model):
         if not sr_payment_journal_id:
             raise ValidationError("No se econtró el diario de pago de factura.")
 
-        payment_type = 'inbound' if invoice.type in ('out_invoice', 'in_refund') else 'outbound'
+        payment_type = 'inbound' if invoice.move_type in ('out_invoice', 'in_refund') else 'outbound'
+        if payment_type == 'inbound':
+            payment_method = self.env.ref('account.account_payment_method_manual_in')
+        else:
+            payment_method = self.env.ref('account.account_payment_method_manual_out')
+
+
+        Payment = self.env['account.payment'].with_context(default_invoice_ids=[(4, invoice.id, False)])
+        payment = Payment.create({
+            'date': invoice.date,
+            'payment_method_id': payment_method.id,
+            'payment_type': payment_type,
+            'partner_type': 'supplier',
+            'partner_id': invoice.partner_id.id,
+            'amount': invoice.amount_total,
+            'journal_id': sr_payment_journal_id.id
+        })
+        return payment
+    
+    def create_payment(self, invoice):
+        """
+        Crea pago para la factura indicada
+        """
+        _logger.info("===> create_payment")
+        param = self.env['ir.config_parameter'].sudo()
+        sr_company_id = param.get_param('itl_sr_interface.sr_company_id')
+        if not self.company_id:
+            self.company_id = self.env['res.company'].search([('id','=',sr_company_id)])[0]
+        
+        sr_payment_journal_id = self.company_id.sr_payment_journal_id
+        if not sr_payment_journal_id:
+            raise ValidationError("No se econtró el diario de pago de factura.")
+
+        payment_type = 'inbound' if invoice.move_type in ('out_invoice', 'in_refund') else 'outbound'
         if payment_type == 'inbound':
             payment_method = self.env.ref('account.account_payment_method_manual_in')
         else:
             payment_method = self.env.ref('account.account_payment_method_manual_out')
 
         AccountPayment = self.env['account.payment']
-        AccountRegisterPayments = self.env['account.register.payments']
+        AccountRegisterPayments = self.env['account.payment.register']
         
         vals = {
                 'amount': invoice.amount_total or 0.0,
@@ -988,17 +1000,15 @@ class ActivemqMessage(models.Model):
                 'journal_id': sr_payment_journal_id.id,
                 'payment_type': payment_type,
                 'payment_method_id': payment_method.id,
-                'group_invoices': False,
-                'invoice_ids': [(6, 0, [invoice.id])],
-                'multi': False,
-                'payment_date': invoice.date_invoice,
+                'payment_date': invoice.invoice_date,
                 'communication': invoice.name
             }
 
-        account_register_payment_id = AccountRegisterPayments.with_context({'active_ids': [invoice.id, ]}).create(vals)
-        payment_vals = account_register_payment_id.get_payments_vals()
-
-        return AccountPayment.create(payment_vals)
+        account_register_payment_id = AccountRegisterPayments.with_context({'active_ids': [invoice.id, ], 'active_model': 'account.move'}).create(vals)
+        _logger.info("===> AFTER create AccountRegisterPayments")
+        payment_id = account_register_payment_id._create_payments()
+        _logger.info("===> AFTER payment_vals")
+        return payment_id
 
     def reload_xml_message(self):
         _logger.info("---> reload_xml_message")
