@@ -22,6 +22,18 @@ class CmpConfi(models.TransientModel):
 	cmp_receipt_path = fields.Char( related="company_id.cmp_receipt_path", string="Inbound – Receipt PDF Directory", readonly=False)
 	cmp_recurringprepaymentsextract_inbound_path = fields.Char( related="company_id.cmp_recurringprepaymentsextract_inbound_path", string="Inbound - Recurring Directory", readonly=False)
 	cmp_odoo_recurringprepaymentsextract_outbound_path = fields.Char( related="company_id.cmp_odoo_recurringprepaymentsextract_outbound_path", string="Odoo outbound Recurring Directory", readonly=False)
+	cmp_payment_journal_id = fields.Many2one('account.journal', related="company_id.cmp_payment_journal_id", string="Journal", readonly=False)
+    
+	elavon_hostname = fields.Char(related="company_id.elavon_hostname", string="Hostname", readonly=False)
+	elavon_port = fields.Char(related="company_id.elavon_port", string="Port", readonly=False)
+	elavon_user = fields.Char(related="company_id.elavon_user", string="User", readonly=False)
+	elavon_password = fields.Char(related="company_id.elavon_password", string="Password", readonly=False)
+	elavon_id_buzon = fields.Char(related="company_id.elavon_id_buzon", string="Inbox/Outbox identifier", readonly=False)
+	elavon_id_company = fields.Char(related="company_id.elavon_id_company", string="Company identifier", readonly=False)
+	elavon_local_inbox_path = fields.Char(related="company_id.elavon_local_inbox_path", string="Local inbox path", readonly=False)
+	elavon_local_outbox_path = fields.Char(related="company_id.elavon_local_outbox_path", string="Local outbox path", readonly=False)
+	elavon_remote_inbox_path = fields.Char(related="company_id.elavon_remote_inbox_path", string="Remote inbox path", readonly=False)
+	elavon_remote_outbox_path = fields.Char(related="company_id.elavon_remote_outbox_path", string="Remote outbox path", readonly=False)
 	
 	def check_credentials(self):
 		client = paramiko.SSHClient()

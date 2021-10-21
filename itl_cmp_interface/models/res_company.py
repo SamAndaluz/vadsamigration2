@@ -21,9 +21,19 @@ class ResCompany(models.Model):
 	cmp_receipt_path = fields.Char(string="Inbound – Receipt PDF Directory")
 	cmp_recurringprepaymentsextract_inbound_path = fields.Char(string="Inbound - Recurring Directory")
 	cmp_odoo_recurringprepaymentsextract_outbound_path = fields.Char(string="Odoo outbound Recurring Directory")
+	cmp_payment_journal_id = fields.Many2one('account.journal', string="Journal for payment invoice", domain=[('type', 'in', ('bank', 'cash'))])
+    
+	elavon_hostname = fields.Char(string="Hostname")
+	elavon_port = fields.Char(string="Port")
+	elavon_user = fields.Char(string="User")
+	elavon_password = fields.Char(string="Password")
+	elavon_id_buzon = fields.Char(string="Inbox/Outbox identifier")
+	elavon_id_company = fields.Char(string="Company identifier")
+	elavon_local_inbox_path = fields.Char(string="Local inbox path")
+	elavon_local_outbox_path = fields.Char(string="Local outbox path")
+	elavon_remote_inbox_path = fields.Char(string="Remote inbox path")
+	elavon_remote_outbox_path = fields.Char(string="Remote outbox path")
 	
-
-
 	def check_credentials(self):
 		client = paramiko.SSHClient()
 		client.set_missing_host_key_policy(paramiko.AutoAddPolicy())

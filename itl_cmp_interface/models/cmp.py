@@ -1,6 +1,7 @@
 from odoo import api, fields, models, _
 import paramiko
 import os
+import io
 import json
 from jsonschema import validate
 import jsonschema
@@ -140,9 +141,9 @@ class CmpMessage(models.Model):
 		if len(self.cmp_item_ids) > 0:
 			param = self.env['ir.config_parameter'].sudo()
 			sr_company_id = param.get_param('itl_sr_interface.sr_company_id') or False
-			elavon_id_buzon = param.get_param('itl_elavon_cron.elavon_id_buzon') or False
-			elavon_id_company = param.get_param('itl_elavon_cron.elavon_id_company') or False
-			elavon_local_outbox_path = param.get_param('itl_elavon_cron.elavon_local_outbox_path') or False
+			elavon_id_buzon = self.company_id.elavon_id_buzon
+			elavon_id_company = self.company_id.elavon_id_company
+			elavon_local_outbox_path = self.company_id.elavon_local_outbox_path
 			error_flag = False
 			if not sr_company_id:
 				self.message_post(body="Advertencia: No está configurada la compañía.", subject="Registro no procesado")
@@ -167,7 +168,7 @@ class CmpMessage(models.Model):
 					continue
 				_logger.info("-> detail.account_number: ***" + str(detail.account_number) + "**")
 				_logger.info("-> sr_company_id: " + str(sr_company_id))
-				sale_subscription_id = self.env['sale.subscription'].with_context(force_company=sr_company_id).search([('account_id_ref','=',detail.account_number),('company_id.id','=',sr_company_id)], limit=1)
+				sale_subscription_id = self.env['sale.subscription'].with_company(sr_company_id).search([('account_id_ref','=',detail.account_number),('company_id.id','=',sr_company_id)], limit=1)
 				_logger.info("-> sale_subscription_id: " + str(sale_subscription_id))
 				if not sale_subscription_id:
 					self.message_post(body="Advertencia: No se creó la factura. No se encontró la suscripción asociada al account number " + str(detail.account_number) + " en el item " + str(detail.transaction_number), subject="Registro no procesado")
@@ -220,9 +221,11 @@ class CmpMessage(models.Model):
 						email = sale_subscription_id.partner_id.email
 
 					if len(detail.card_reference_number) == 15:
+						_logger.info("==> AMEX")
 						file_line = (str(detail.id) + '_' + str(ref)) + '\t' + str(detail.card_reference_number) + '\t' + str(total_amount) + '\t' + str(email)
 						file_lines_am.append(file_line)
 					else:
+						_logger.info("==> V/M")
 						file_line = (str(detail.id) + '_' + str(ref)) + '\t' + str(detail.card_reference_number) + '\t' + str(total_amount) + '\t' + str(email) + '\t' + str(detail.account_number)
 						file_lines_vm.append(file_line)
 					
@@ -230,8 +233,8 @@ class CmpMessage(models.Model):
 						detail.invoice_id = invoice_id.id
 						detail.message_post(body="La factura se creó correctamente.", subject="Registro procesado")
 				except Exception as e:
-					self.message_post(body="Exception: " + str(e.args[0]), subject="Registro no procesado")
-					detail.message_post(body="Exception: " + str(e.args[0]), subject="Registro no procesado")
+					self.message_post(body="Exception1: " + str(e.args[0]), subject="Registro no procesado")
+					detail.message_post(body="Exception1: " + str(e.args[0]), subject="Registro no procesado")
 					self.status_file = 'error'
 					detail.status = 'error'
 					error_flag = True
@@ -255,11 +258,12 @@ class CmpMessage(models.Model):
 				#	_logger.info("La fecha es menor a la 1 pm: " + str(date_tz))
 				filename = "pcv" + str(elavon_id_company) + str(elavon_id_buzon) + str(date_tz.year)[-2:] + str('{:02d}'.format(date_tz.month)) + str('{:02d}'.format(date_tz.day)) + str('{:02d}'.format(date_tz.hour)) + str('{:02d}'.format(date_tz.minute)) + str("_token.txt")
 				#raise ValidationError("Testing...")
-				with open(str(elavon_local_outbox_path) + "/" + str(filename), 'w') as file:
-					file.write(elavon_message)
-				file_content_binary = open(elavon_local_outbox_path + '/' + str(filename), 'rb')
-				file_content = file_content_binary.read()
-				file_b64 = base64.b64encode(file_content)
+				#with open(str(elavon_local_outbox_path) + "/" + str(filename), 'w') as file:
+				#	file.write(elavon_message)
+				#f = io.StringIO(elavon_message)
+				#file_content_binary = open(elavon_local_outbox_path + '/' + str(filename), 'rb')
+				#file_content = file_content_binary.read()
+				file_b64 = base64.b64encode(elavon_message.encode())
 				self.file_to_elavon = file_b64
 				self.filename_to_elavon = filename
 				#if not send_tomorrow:
@@ -272,7 +276,7 @@ class CmpMessage(models.Model):
 						if not detail.status or not detail.status == 'error':
 							detail.status = 'sent'
 				except Exception as e:
-					self.message_post(body="Exception: " + str(e), subject="Registro no procesado")
+					self.message_post(body="Exception2: " + str(e), subject="Registro no procesado")
 					self.status = 'error'
 					error_flag = True
 					
@@ -295,22 +299,24 @@ class CmpMessage(models.Model):
 				else:
 					_logger.info("La fecha es menor a la 1 pm: " + str(date_tz))
 					filename = "pca" + str(elavon_id_company) + str(elavon_id_buzon) + str(date_tz.year)[-2:] + str('{:02d}'.format(date_tz.month)) + str('{:02d}'.format(date_tz.day)) + str('{:02d}'.format(date_tz.hour)) + str('{:02d}'.format(date_tz.minute)) + str("_token.txt")
-				with open(str(elavon_local_outbox_path) + "/" + str(filename), 'w') as file:
-					file.write(elavon_message)
-				file_content_binary = open(elavon_local_outbox_path + '/' + str(filename), 'rb')
-				file_content = file_content_binary.read()
-				file_b64 = base64.b64encode(file_content)
+				#with open(str(elavon_local_outbox_path) + "/" + str(filename), 'w') as file:
+				#	file.write(elavon_message)
+				#f = io.StringIO(elavon_message)
+				#file_content_binary = open(elavon_local_outbox_path + '/' + str(filename), 'rb')
+				#file_content = file_content_binary.read()
+				file_b64 = base64.b64encode(elavon_message.encode())
 				self.file_amex_to_elavon = file_b64
 				self.filename_amex_to_elavon = filename
 				if not send_tomorrow:
 					try:
+						_logger.info("==> before send_to_elavon")
 						self.send_to_elavon(self.filename_amex_to_elavon)
 						self.status_amex = 'sent'
 						self.status_file = 'sent'
 						for detail in self.cmp_item_ids:
 							detail.status = 'sent'
 					except Exception as e:
-						self.message_post(body="Exception: " + str(e.args[0]), subject="Registro no procesado")
+						self.message_post(body="Exceptio3: " + str(e.args[0]), subject="Registro no procesado")
 						self.status_amex = 'error'
 						error_flag = True
 				else:
@@ -345,7 +351,7 @@ class CmpMessage(models.Model):
 						cmp_f.send_to_elavon(cmp_f.filename_amex_to_elavon)
 						_logger.info("***==> DESPUÉS DE send_to_elavon ======")
 					except Exception as e:
-						cmp_f.message_post(body="Exception: " + str(e.args[0]), subject="Registro no procesado")
+						cmp_f.message_post(body="Exception4: " + str(e.args[0]), subject="Registro no procesado")
 						cmp_f.status_amex = 'error'
 						return
 					cmp_f.status_amex = 'sent'
@@ -356,12 +362,13 @@ class CmpMessage(models.Model):
 
 	def send_to_elavon(self, filename):
 		ICPSudo = self.env['ir.config_parameter'].sudo()
-		elavon_hostname = ICPSudo.get_param('itl_elavon_cron.elavon_hostname') or False
-		elavon_port = ICPSudo.get_param('itl_elavon_cron.elavon_port') or False
-		elavon_user = ICPSudo.get_param('itl_elavon_cron.elavon_user') or False
-		elavon_password = ICPSudo.get_param('itl_elavon_cron.elavon_password') or False
-		elavon_local_outbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_local_outbox_path') or False
-		elavon_remote_inbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_remote_inbox_path') or False
+
+		elavon_hostname = self.company_id.elavon_hostname
+		elavon_port = self.company_id.elavon_port
+		elavon_user = self.company_id.elavon_user
+		elavon_password = self.company_id.elavon_password
+		elavon_local_outbox_path = self.company_id.elavon_local_outbox_path
+		elavon_remote_inbox_path = self.company_id.elavon_remote_inbox_path
 		try:
 			client = paramiko.SSHClient()
 			client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -371,19 +378,18 @@ class CmpMessage(models.Model):
 			ftp_client.put(str(elavon_local_outbox_path) + "/" + str(filename), str(elavon_remote_inbox_path) + "/" + str(filename))
 			self.message_post(body="El archivo " + str(filename) + " se envió correctamente a ELAVON.", subject="Registro procesado")
 		except Exception as e:
-			self.message_post(body="Ocurrió un error al enviar archivos a ELAVON", subject="Registro no procesado")
-			self.message_post(body="Exception: " + str(e.args[0]), subject="Registro no procesado")
+			self.message_post(body="Ocurrió un error al enviar archivos a ELAVON. Exception: " + str(e.args[0]), subject="Registro no procesado")
 			#self.status = 'error'
 			self.env['cmp.message.log'].create({'log': str(e)})
 	
 	def send_files_to_elavon(self):
 		ICPSudo = self.env['ir.config_parameter'].sudo()
-		elavon_hostname = ICPSudo.get_param('itl_elavon_cron.elavon_hostname') or False
-		elavon_port = ICPSudo.get_param('itl_elavon_cron.elavon_port') or False
-		elavon_user = ICPSudo.get_param('itl_elavon_cron.elavon_user') or False
-		elavon_password = ICPSudo.get_param('itl_elavon_cron.elavon_password') or False
-		elavon_local_outbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_local_outbox_path') or False
-		elavon_remote_inbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_remote_inbox_path') or False
+		elavon_hostname = self.company_id.elavon_hostname
+		elavon_port = self.company_id.elavon_port
+		elavon_user = self.company_id.elavon_user
+		elavon_password = self.company_id.elavon_password
+		elavon_local_outbox_path = self.company_id.elavon_local_outbox_path
+		elavon_remote_inbox_path = self.company_id.elavon_remote_inbox_path
 		try:
 			client = paramiko.SSHClient()
 			client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -399,19 +405,18 @@ class CmpMessage(models.Model):
 				self.status_amex = 'sent'
 				self.message_post(body="El archivo Amex se envió correctamente a ELAVON.", subject="Registro procesado")
 		except Exception as e:
-			self.message_post(body="Exception: " + str(e.args[0]), subject="Registro no procesado")
-			self.message_post(body="Ocurrió un error al enviar archivos a ELAVON", subject="Registro no procesado")
+			self.message_post(body="Ocurrió un error al enviar archivos V/M o AMEX a ELAVON. Exception: " + str(e.args[0]), subject="Registro no procesado")
 			#self.status = 'error'
 			self.env['cmp.message.log'].create({'log': str(e)})
 
 	def read_from_elavon(self):
 		ICPSudo = self.env['ir.config_parameter'].sudo()
-		elavon_hostname = ICPSudo.get_param('itl_elavon_cron.elavon_hostname') or False
-		elavon_port = ICPSudo.get_param('itl_elavon_cron.elavon_port') or False
-		elavon_user = ICPSudo.get_param('itl_elavon_cron.elavon_user') or False
-		elavon_password = ICPSudo.get_param('itl_elavon_cron.elavon_password') or False
-		elavon_local_inbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_local_inbox_path') or False
-		elavon_remote_outbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_remote_outbox_path') or False
+		elavon_hostname = self.company_id.elavon_hostname
+		elavon_port = self.company_id.elavon_port
+		elavon_user = self.company_id.elavon_user
+		elavon_password = self.company_id.elavon_password
+		elavon_local_inbox_path = self.company_id.elavon_local_inbox_path
+		elavon_remote_outbox_path = self.company_id.elavon_remote_outbox_path
 		try:
 			client = paramiko.SSHClient()
 			client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -419,7 +424,7 @@ class CmpMessage(models.Model):
 			ftp_client = client.open_sftp()
 			ftp_client.chdir("/")
 		except Exception as e:
-			self.message_post(body="Exception: " + str(e), subject="Registro no procesado")
+			self.message_post(body="Ocurrió un error al leer archivos V/M desde ELAVON. Exception: " + str(e), subject="Registro no procesado")
 			self.status = 'response_error'
 			self.env['cmp.message.log'].create({'log': str(e)})
 			return False, False, []
@@ -468,12 +473,12 @@ class CmpMessage(models.Model):
 
 	def read_amex_from_elavon(self):
 		ICPSudo = self.env['ir.config_parameter'].sudo()
-		elavon_hostname = ICPSudo.get_param('itl_elavon_cron.elavon_hostname') or False
-		elavon_port = ICPSudo.get_param('itl_elavon_cron.elavon_port') or False
-		elavon_user = ICPSudo.get_param('itl_elavon_cron.elavon_user') or False
-		elavon_password = ICPSudo.get_param('itl_elavon_cron.elavon_password') or False
-		elavon_local_inbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_local_inbox_path') or False
-		elavon_remote_outbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_remote_outbox_path') or False
+		elavon_hostname = self.company_id.elavon_hostname
+		elavon_port = self.company_id.elavon_port
+		elavon_user = self.company_id.elavon_user
+		elavon_password = self.company_id.elavon_password
+		elavon_local_inbox_path = self.company_id.elavon_local_inbox_path
+		elavon_remote_outbox_path = self.company_id.elavon_remote_outbox_path
 		try:
 			client = paramiko.SSHClient()
 			client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -481,7 +486,7 @@ class CmpMessage(models.Model):
 			ftp_client = client.open_sftp()
 			ftp_client.chdir("/")
 		except Exception as e:
-			self.message_post(body="Exception: " + str(e), subject="Registro no procesado")
+			self.message_post(body="Ocurrió un error al leer archivos AMEX desde ELAVON. Exception: " + str(e), subject="Registro no procesado")
 			self.status_amex = 'response_error'
 			self.env['cmp.message.log'].create({'log': str(e)})
 			return False, False, []
@@ -530,12 +535,12 @@ class CmpMessage(models.Model):
 	
 	def check_if_file_exists(self):
 		ICPSudo = self.env['ir.config_parameter'].sudo()
-		elavon_hostname = ICPSudo.get_param('itl_elavon_cron.elavon_hostname') or False
-		elavon_port = ICPSudo.get_param('itl_elavon_cron.elavon_port') or False
-		elavon_user = ICPSudo.get_param('itl_elavon_cron.elavon_user') or False
-		elavon_password = ICPSudo.get_param('itl_elavon_cron.elavon_password') or False
-		elavon_local_inbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_local_inbox_path') or False
-		elavon_remote_outbox_path = ICPSudo.get_param('itl_elavon_cron.elavon_remote_outbox_path') or False
+		elavon_hostname = self.company_id.elavon_hostname
+		elavon_port = self.company_id.elavon_port
+		elavon_user = self.company_id.elavon_user
+		elavon_password = self.company_id.elavon_password
+		elavon_local_inbox_path = self.company_id.elavon_local_inbox_path
+		elavon_remote_outbox_path = self.company_id.elavon_remote_outbox_path
 
 		client = paramiko.SSHClient()
 		client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -665,11 +670,13 @@ class CmpMessage(models.Model):
 				detail_obj_id.response_code = '00'
 				detail_obj_id.status = 'approved'
 				try:
-					invoice_obj_id.action_invoice_open()
+					invoice_obj_id.action_post()
+					if invoice_obj_id.edi_state in ['to_send']:
+						invoice_obj_id.action_process_edi_web_services()
 					if invoice_obj_id.l10n_mx_edi_cfdi_uuid:
 						# Create payment
-						payment = self.with_context(force_company=sr_company_id).create_payment(invoice_obj_id)
-						payment.post()
+						payment = self.with_company(sr_company_id).create_payment(invoice_obj_id)
+						#payment.post()
 						# Send by email
 						self.send_mail(invoice_obj_id)
 				except Exception as e:
@@ -737,11 +744,13 @@ class CmpMessage(models.Model):
 				detail_obj_id.response_code = '00'
 				detail_obj_id.status = 'approved'
 				try:
-					invoice_obj_id.action_invoice_open()
+					invoice_obj_id.action_post()
+					if invoice_obj_id.edi_state in ['to_send']:
+						invoice_obj_id.action_process_edi_web_services()
 					if invoice_obj_id.l10n_mx_edi_cfdi_uuid:
 						# Create payment
-						payment = self.with_context(force_company=sr_company_id).create_payment(invoice_obj_id)
-						payment.post()
+						payment = self.with_company(sr_company_id).create_payment(invoice_obj_id)
+						#payment.post()
 						# Send by email
 						self.send_mail(invoice_obj_id)
 				except Exception as e:
@@ -774,7 +783,7 @@ class CmpMessage(models.Model):
 
 		param = self.env['ir.config_parameter'].sudo()
 		sr_company_id = param.get_param('itl_sr_interface.sr_company_id') or False
-		elavon_local_inbox_path = param.get_param('itl_elavon_cron.elavon_local_inbox_path') or False
+		elavon_local_inbox_path = param.get_param('itl_cmp_interface.elavon_local_inbox_path') or False
 
 		file_err = False
 		has_rejections = False
@@ -843,11 +852,13 @@ class CmpMessage(models.Model):
 					detail_obj_id.status = 'approved'
 					if invoice_obj_id:
 						try:
-							invoice_obj_id.action_invoice_open()
+							invoice_obj_id.action_post()
+							if invoice_obj_id.edi_state in ['to_send']:
+								invoice_obj_id.action_process_edi_web_services()
 							if invoice_obj_id.l10n_mx_edi_cfdi_uuid:
 								# Create payment
-								payment = self.with_context(force_company=sr_company_id).create_payment(invoice_obj_id)
-								payment.post()
+								payment = self.with_company(sr_company_id).create_payment(invoice_obj_id)
+								#payment.post()
 								# Send by email
 								self.send_mail(invoice_obj_id)
 						except Exception as e:
@@ -881,7 +892,7 @@ class CmpMessage(models.Model):
 
 		param = self.env['ir.config_parameter'].sudo()
 		sr_company_id = param.get_param('itl_sr_interface.sr_company_id') or False
-		elavon_local_inbox_path = param.get_param('itl_elavon_cron.elavon_local_inbox_path') or False
+		elavon_local_inbox_path = self.company_id.elavon_local_inbox_path
 
 		file_err = False
 		has_rejections = False
@@ -950,11 +961,13 @@ class CmpMessage(models.Model):
 					detail_obj_id.status = 'approved'
 					if invoice_obj_id:
 						try:
-							invoice_obj_id.action_invoice_open()
+							invoice_obj_id.action_post()
+							if invoice_obj_id.edi_state in ['to_send']:
+								invoice_obj_id.action_process_edi_web_services()
 							if invoice_obj_id.l10n_mx_edi_cfdi_uuid:
 								# Create payment
-								payment = self.with_context(force_company=sr_company_id).create_payment(invoice_obj_id)
-								payment.post()
+								payment = self.with_company(sr_company_id).create_payment(invoice_obj_id)
+								#payment.post()
 								# Send by email
 								self.send_mail(invoice_obj_id)
 						except Exception as e:
@@ -988,6 +1001,7 @@ class CmpMessage(models.Model):
 	
 	def send_rejection_file(self):
 		rejection_file = self.validate_rejection_file()
+		rejection_file = json.dumps(rejection_file, indent=4)
 		self.create_rejection_file(rejection_file)
 
 	def create_rejection_file(self, rejection_file):
@@ -997,11 +1011,11 @@ class CmpMessage(models.Model):
 		company_id = self.env['res.company'].search([('id','=',sr_company_id)])[0]
 		cmp_odoo_recurringprepaymentsextract_outbound_path = company_id.cmp_odoo_recurringprepaymentsextract_outbound_path
 		rejection_file_name = str(self.file_name).split('.')[0] + ".in"
-		with open(str(cmp_odoo_recurringprepaymentsextract_outbound_path) + "/" + str(rejection_file_name), 'w', encoding='utf-8') as file:
-			json.dump(rejection_file, file, indent=4, ensure_ascii=False)
-		file_content_binary = open(str(cmp_odoo_recurringprepaymentsextract_outbound_path) + "/" + str(rejection_file_name), 'rb')
-		file_content = file_content_binary.read()
-		file_b64 = base64.b64encode(file_content)
+		#with open(str(cmp_odoo_recurringprepaymentsextract_outbound_path) + "/" + str(rejection_file_name), 'w', encoding='utf-8') as file:
+		#	json.dump(rejection_file, file, indent=4, ensure_ascii=False)
+		#file_content_binary = open(str(cmp_odoo_recurringprepaymentsextract_outbound_path) + "/" + str(rejection_file_name), 'rb')
+		#file_content = file_content_binary.read()
+		file_b64 = base64.b64encode(str(rejection_file).encode())
 		self.file_rejection_to_cmp = file_b64
 		self.filename_file_rejection_to_cmp = rejection_file_name
 		try:
@@ -1073,6 +1087,45 @@ class CmpMessage(models.Model):
 		return rejection_file
 
 	def create_payment(self, invoice):
+		"""
+		Crea pago para la factura indicada
+		"""
+		_logger.info("===> create_payment")
+		param = self.env['ir.config_parameter'].sudo()
+		sr_company_id = param.get_param('itl_sr_interface.sr_company_id')
+		if not self.company_id:
+			self.company_id = self.env['res.company'].search([('id','=',sr_company_id)])[0]
+
+		sr_payment_journal_id = self.company_id.sr_payment_journal_id
+		if not sr_payment_journal_id:
+			raise ValidationError("No se econtró el diario de pago de factura.")
+
+		payment_type = 'inbound' if invoice.move_type in ('out_invoice', 'in_refund') else 'outbound'
+		if payment_type == 'inbound':
+			payment_method = self.env.ref('account.account_payment_method_manual_in')
+		else:
+			payment_method = self.env.ref('account.account_payment_method_manual_out')
+
+		AccountPayment = self.env['account.payment']
+		AccountRegisterPayments = self.env['account.payment.register']
+
+		vals = {
+		        'amount': invoice.amount_total or 0.0,
+		        'currency_id': invoice.currency_id.id,
+		        'journal_id': sr_payment_journal_id.id,
+		        'payment_type': payment_type,
+		        'payment_method_id': payment_method.id,
+		        'payment_date': invoice.invoice_date,
+		        'communication': invoice.name
+		    }
+
+		account_register_payment_id = AccountRegisterPayments.with_context({'active_ids': [invoice.id, ], 'active_model': 'account.move'}).create(vals)
+		_logger.info("===> AFTER create AccountRegisterPayments")
+		payment_id = account_register_payment_id._create_payments()
+		_logger.info("===> AFTER payment_vals")
+		return payment_id
+
+	def create_payment_(self, invoice):
 		"""
 		Crea pago para la factura indicada
 		"""
@@ -1160,6 +1213,96 @@ class CmpMessage(models.Model):
 					)
 
 				cmp_item.create(item_vals)
+
+	def process_file(self):
+		o_type = 'recurring'
+		param = self.env['ir.config_parameter'].sudo()
+		sr_company_id = param.get_param('itl_sr_interface.sr_company_id')
+		company_id = self.env['res.company'].search([('id','=',sr_company_id)])[0]
+		#file_content = file.read()
+		file_content = base64.decodestring(self.file)
+		file_name = self.file_name
+		cmp_message = self.env['cmp.message']
+		cmp_m = self
+		if o_type == 'recurring':
+			try:
+				file_content_json = json.loads(file_content)
+				_logger.info("----> file_content_json: " + str(file_content_json))
+				msg_id = file_content_json['id']
+				message = cmp_message.search([('message_id','=',msg_id)])
+				if True:
+					job_code = file_content_json['jobCode']
+					job_description = file_content_json['jobDescription']
+					batch_date_time = file_content_json['batchDateTime']
+					#batch_date_time = datetime.strptime(batch_date_time, '%Y-%m-%dT%H:%M:%S.%f').strftime("%Y-%m-%dT%H:%M:%S")
+					new_vals = {
+					    'name': o_type,
+					    'message_id': msg_id,
+					    'content_file': file_content_json,
+					    'job_code': job_code,
+					    'job_description': job_description,
+					    #'batch_date_time': batch_date_time
+					}
+
+					cmp_m.write(new_vals)
+					#cmp_m.name = file_type
+					#cmp_m.message_id = msg_id
+					#cmp_m.content_file = file_content_json
+					#cmp_m.job_code = job_code
+					#cmp_m.job_description = job_description
+					#cmp_m.batch_date_time = datetime.strptime(batch_date_time, '%Y-%m-%dT%H:%M:%S.%f').strftime("%Y-%m-%dT%H:%M:%S")
+
+					details = file_content_json['details']
+					item_list = []
+					for detail in details:
+						cmp_item = self.env['cmp.item']
+						item_vals = {}
+
+						if 'transactionNumber' in detail:
+							item_vals.update(transaction_number = detail['transactionNumber'])
+						if 'paymentType' in detail:
+							item_vals.update(payment_type = detail['paymentType'])
+						if 'accountNumber' in detail:
+							item_vals.update(account_number = detail['accountNumber'])
+						if 'amount' in detail:
+							item_vals.update(amount = detail['amount'])
+						if 'nameOnCard' in detail:
+							item_vals.update(name_on_card = detail['nameOnCard'])
+						if 'cardNumber' in detail:
+							item_vals.update(card_number = detail['cardNumber'])
+						if 'startDateYymm' in detail:
+							item_vals.update(start_date = detail['startDateYymm'])
+						if 'endDateYymm' in detail:
+							item_vals.update(end_date = detail['endDateYymm'])
+						if 'cardReferenceNumber' in detail:
+							item_vals.update(card_reference_number = detail['cardReferenceNumber'])
+						if 'cardType' in detail:
+							item_vals.update(card_type = detail['cardType'])
+
+						_logger.info("---> len(detail['cardReferenceNumber']): " + str(len(detail['cardReferenceNumber'])))
+						_logger.info("---> detail['cardReferenceNumber']: " + str(detail['cardReferenceNumber']))
+						if len(detail['cardReferenceNumber']) == 15:
+							item_vals.update(token_type = 'amex')
+						else:
+							item_vals.update(token_type = 'visa_mastercard')
+
+						item_list.append((0, 0, item_vals))
+
+					if len(item_list) > 0:
+						cmp_m.cmp_item_ids = item_list
+					#cmp_m = cmp_message.create(vals)
+					cmp_m.with_company(sr_company_id).process_details()
+				else:
+					cmp_m.message_post(body="Advertencia: El archivo ya fue procesado con anterioridad.", subject="Registro no procesado")
+					return False
+			except Exception as e:
+				_logger.info("Error log: " + str(e))
+				cmp_m.status = 'error'
+				cmp_m.message_post(body="Advertencia: Error al procesar el archivo. Error: " + str(e), subject="Registro no procesado")
+				return e
+
+			
+			return False
 
 class CmpItem(models.Model):
 	_name = "cmp.item"
@@ -1258,7 +1401,7 @@ class CmpItem(models.Model):
 	def generate_invoice(self):
 		if self.invoice_id:
 			raise ValidationError("La factura ya fue generada.")
-		sale_subscription_id = self.env['sale.subscription'].with_context(force_company=self.company_id.id).search([('account_id_ref','=',self.account_number),('company_id.id','=',self.company_id.id)], limit=1)
+		sale_subscription_id = self.env['sale.subscription'].with_company(self.company_id.id).search([('account_id_ref','=',self.account_number),('company_id.id','=',self.company_id.id)], limit=1)
 		_logger.info("-> sale_subscription_id: " + str(sale_subscription_id))
 		if not sale_subscription_id:
 			raise ValidationError("No se encontró la suscripción asociada al account number " + str(self.account_number) + ".")

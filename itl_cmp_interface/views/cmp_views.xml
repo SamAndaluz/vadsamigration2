@@ -23,11 +23,11 @@
         <field name="arch" type="xml">
             <form string="CMP Message">
                 <header>
+                    <button name="process_file" type="object" string="Process File" groups="itl_cmp_interface.group_show_actions_cmp"/>
                     <button name="process_details" type="object" string="Process content" groups="itl_cmp_interface.group_show_actions_cmp"/>
                     <button name="send_files_to_elavon" type="object" string="Send to ELAVON" groups="itl_cmp_interface.group_show_actions_cmp"/>
                     <button name="loop_files" type="object" string="Process response" groups="itl_cmp_interface.group_show_actions_cmp"/>
-                    <button name="validate_rejection_file" type="object" string="Create rejection file" groups="itl_cmp_interface.group_show_actions_cmp"/>
-                    <button name="send_rejection_file" type="object" string="Send rejection file" groups="itl_cmp_interface.group_show_actions_cmp"/>
+                    <button name="send_rejection_file" type="object" string="Create and Send rejection file" groups="itl_cmp_interface.group_show_actions_cmp"/>
                     <field name="status_message" widget="statusbar"/>
                 </header>
                 <sheet>

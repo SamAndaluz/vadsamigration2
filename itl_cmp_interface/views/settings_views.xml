@@ -8,8 +8,21 @@
         <field name="arch" type="xml">
             <!--<xpath expr="//div[@id='product_general_settings']" position="after">-->
             <div data-key="general_settings" position="inside">
+                <!-- CMP -->
                 <h2>CMP Configuration</h2>
                 <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Journal for payment invoice
+                            </span>
+                            <div class="text-muted">
+                                <field name="cmp_payment_journal_id"/>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div class="col-12 col-lg-6 o_setting_box">
                         <div class="o_setting_left_pane"/>
                         <div class="o_setting_right_pane">
@@ -186,6 +199,121 @@
                             </span>
                             <div class="text-muted">
                                 <button name="check_credentials" type="object" string="Test"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- ELAVON -->
+                <h2>Elavon connection</h2>
+                <div class="row mt16 o_settings_container">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Hostname
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_hostname"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Port
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_port"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Username
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_user"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Password
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_password" password="True"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Inbox/Outbox identifier
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_id_buzon"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Company identifier
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_id_company"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Local inbox path
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_local_inbox_path"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Local outbox path
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_local_outbox_path"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Remote inbox path
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_remote_inbox_path"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">
+                                Remote outbox path
+                            </span>
+                            <div class="text-muted">
+                                <field name="elavon_remote_outbox_path"/>
                             </div>
                         </div>
                     </div>

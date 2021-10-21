@@ -151,7 +151,7 @@ class CmpGetFile(models.TransientModel):
                             ftp_client.get(str(f_name), local_path + "/" + str(f_name))
                 except Exception as e:
                     #cmp_log = self.env['cmp.message.log'].create({'log': str(e)})
-                    error_messages.append("Error: " + str(e) + "                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            . File: " + str(f_name))
+                    error_messages.append("Error: " + str(e) + ". File: " + str(f_name))
                     _logger.info("Error log: " + str(e))
                     continue
             if len(error_messages) > 0:
