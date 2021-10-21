@@ -48,47 +48,31 @@ class SaleSubscription(models.Model):
         return order_line_obj.create(values)
 
     # Inherit from sale_subscription.sale_subscription
-    def _prepare_invoice_line(self, line, fiscal_position):
-        if 'force_company' in self.env.context:
-            company = self.env['res.company'].browse(self.env.context['force_company'])
-        else:
-            company = line.analytic_account_id.company_id
-            line = line.with_context(force_company=company.id, company_id=company.id)
-
-        account = line.product_id.property_account_income_id
-        if not account:
-            account = line.product_id.categ_id.property_account_income_categ_id
-        account_id = fiscal_position.map_account(account).id
-
-        tax = line.product_id.taxes_id.filtered(lambda r: r.company_id == company)
-        tax = fiscal_position.map_tax(tax, product=line.product_id, partner=self.partner_id)
-
+    def _prepare_invoice_line(self, line, fiscal_position, date_start=False, date_stop=False):
+        result = super(SaleSubscription, self)._prepare_invoice_line(line, fiscal_position)
+        
         price_unit = 0.0
         context = self._context
         if 'price_unit' in context:
-            _logger.info("-> Entró en el context")
             price_unit = context.get('price_unit')
         else:
             price_unit = line.price_unit or 0.0
+        
+        param = self.env['ir.config_parameter'].sudo()
+        sr_company_id = param.get_param('itl_sr_interface.sr_company_id')
+        company_id = self.env['res.company'].search([('id','=',sr_company_id)])[0]
+        tax_id = company_id.sr_tax_id
 
-        return {
-            'name': line.name,
-            'account_id': account_id,
-            'account_analytic_id': line.analytic_account_id.analytic_account_id.id,
-            'subscription_id': line.analytic_account_id.id,
-            'price_unit': price_unit,
-            'discount': line.discount,
-            'quantity': line.quantity,
-            'uom_id': line.uom_id.id,
-            'product_id': line.product_id.id,
-            'invoice_line_tax_ids': [(6, 0, tax.ids)],
-            'analytic_tag_ids': [(6, 0, line.analytic_account_id.tag_ids.ids)]
-        }
+        result['tax_ids'] = [(6, 0, tax_id.ids)]
+        result['price_unit'] = price_unit
+        return result
 
     # Inherit from sale_subscription.sale_subscription
     def _prepare_invoice_lines(self, fiscal_position):
         self.ensure_one()
-        fiscal_position = self.env['account.fiscal.position'].browse(fiscal_position)
+        _logger.info("===> fiscal_position: " + str(fiscal_position))
+        #fiscal_position = self.env['account.fiscal.position'].browse(fiscal_position)
+        #_logger.info("===> fiscal_position 2: " + str(fiscal_position))
         # Se agregó filtro para colocar solo los productos que son plan
         #return [(0, 0, self._prepare_invoice_line(line, fiscal_position)) for line in self.recurring_invoice_line_ids]
         product_plan = self.recurring_invoice_line_ids.filtered(lambda line: line.product_id.isRecurring or 'Recurrente' in line.product_id.name)

@@ -215,7 +215,7 @@ class ActivemqMessage(models.Model):
                                 product_id = self.env['product.product'].search([('productLegacyId','=',product_info['productLegacyId']),('subscription_template_id','=',subscription_template_id.id)])
                                 _logger.info("-> product_id: " + str(product_id))
                                 if not product_id:
-                                    product_id = record.with_context(force_company=record.company_id.id).create_product_subscription(product_info, subscription_template_id, product_category, is_rokit)
+                                    product_id = record.with_company(record.company_id.id).create_product_subscription(product_info, subscription_template_id, product_category, is_rokit)
                             else:
                                 exception_message.append("No se pudo obtener el producto de la suscripción.")
                                 raise ValidationError("Error en validaciones.")
@@ -224,7 +224,7 @@ class ActivemqMessage(models.Model):
                             _logger.info("-> After get product info")
                             # Create SO and confirm it
                             if not record.sale_order_id:
-                                sale_order_id = record.with_context(force_company=record.company_id.id).create_sale_order_addon(sale_subscription_id, product_id, total_amount)
+                                sale_order_id = record.with_company(record.company_id.id).create_sale_order_addon(sale_subscription_id, product_id, total_amount)
                                 record.sale_order_id = sale_order_id
                                 sale_order_id.action_confirm()
                             else:
@@ -236,7 +236,7 @@ class ActivemqMessage(models.Model):
                             
                             # Create invoice and confirm it
                             if not record.invoice_id:
-                                invoice_id = record.with_context(force_company=record.company_id.id).create_invoice(sale_order_id)
+                                invoice_id = record.with_company(record.company_id.id).create_invoice(sale_order_id)
                                 record.invoice_id = invoice_id
                             else:
                                 invoice_id = record.invoice_id
@@ -251,7 +251,7 @@ class ActivemqMessage(models.Model):
                             if invoice_id.l10n_mx_edi_cfdi_uuid:
                                 if not invoice_id.payment_state in ['paid','in_payment']:
                                     # Create payment
-                                    payment = record.with_context(force_company=record.company_id.id).create_payment(invoice_id)
+                                    payment = record.with_company(record.company_id.id).create_payment(invoice_id)
                                     #payment.post()
                                     _logger.info("-> After pay invoice")
 
